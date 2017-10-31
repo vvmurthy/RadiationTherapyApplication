@@ -1,0 +1,29 @@
+{% extends "uploader/base.html" %}
+{% block title %}Upload Files{% endblock %}
+{% block body %}
+
+    <div class="container" >
+    <div class="panel panel-default">
+    <div class="panel-heading">
+    <h1>Radiation therapy Decision support system</h1>
+    </div><!--panel-heading-->
+    <div class="panel-body">
+        <div align="right">
+            <h4>Clinical ID : <b>USC</b></h4>
+        </div>
+    <h4>Upload new case to be analysed</h4>
+        <!-- The start of the form -->
+       <form class="form-inline" id="uploadDataset" action="" method="post" enctype="multipart/form-data">
+           {% csrf_token %}
+           <div class="form-group">
+               <input type="text" class="form-row" name="patientName">
+           </div>
+           <div class="form-group">
+              <input type="file" class="form-control input-lg" name="dcmZipFile">
+           </div>
+           <div class="form-group">
+               <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+           </div>
+      </form>
+    <hr>
+{% endblock %}
