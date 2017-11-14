@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 import MySQLdb as db
 from django.shortcuts import render, redirect
-from users.models import User
 from dsrt.settings import STATIC_ROOT
 from dsrt.settings import BASE_DIR
 import zipfile
@@ -24,27 +23,26 @@ from tasks import uploader_task
 # Create your views here.
 # Process the uploaded dicom files
 # Store the information into the database
-def processUploadedFile(raw_file_path, patientName, user):
+def processUploadedFile(raw_file_path, patientName, user_id):
     # the input is a zip file
     zipObject = zipfile.ZipFile(raw_file_path.encode('utf8'), 'r')  # create zipfile object
     # unzip the file in a folder named by patientName
-    directory_extract_to = os.path.join(STATIC_ROOT, 'data', str(user.userid), patientName)
+    directory_extract_to = os.path.join(STATIC_ROOT, 'data', str(user_id), patientName)
     if not os.path.exists(directory_extract_to):
         os.makedirs(directory_extract_to)
     zipObject.extractall(directory_extract_to)
     zipObject.close()
     # Process the dicom files to give the output
 
-    rootDir = os.path.join(STATIC_ROOT, 'data', str(user.userid),
+    rootDir = os.path.join(STATIC_ROOT, 'data', str(user_id),
                            patientName)  # set the directory you want to start from
-    r = uploader_task.delay(rootDir, user.id, patientName)
+    r = uploader_task.delay(rootDir, user_id, patientName)
     return r
 
 
 def uploadForm(request):
     # Get the user upload the files
     # user = request.POST['user']
-    user = User.objects.get(pk=1)
     if request.method == 'POST':  # check whether a form has been submitted
         html = ''
         # !!we should let user to type in the name of the file
@@ -65,7 +63,7 @@ def uploadForm(request):
 
         # Does not handle no DICOM files being included in the zip file
         # raw_file_path is the zip file
-        res = processUploadedFile(raw_file_path, patientName, user)
+        res = processUploadedFile(raw_file_path, patientName, 1)
 
         # Delete the files in the raw folder
         folder_path = os.path.join(STATIC_ROOT, 'raw')

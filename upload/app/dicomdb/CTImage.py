@@ -10,7 +10,7 @@ def parse(dataframe, user, patient, study, series):
         Image.SOPInstanceUID = dataframe.SOPInstanceUID
         Image.SOPClassUID = dataframe.SOPClassUID
         Image.ImageType = dataframe.ImageType
-        Image.PhotometricInterpretation = dataframe.PhotometricInterpretation
+        Image.PhotometricInterpretation = dataframe.PhotometricInterpretation if "PhotometricInterpretation" in dataframe and dataframe.PhotometricInterpretation else None
         Image.RescaleSlope = dataframe.RescaleSlope
         Image.RescaleIntercept = dataframe.RescaleIntercept
         Image.SliceLocation = dataframe.SliceLocation
@@ -18,7 +18,7 @@ def parse(dataframe, user, patient, study, series):
         Image.ImageOrientationPatient = dataframe.ImageOrientationPatient
         Image.ImagePositionPatient = dataframe.ImagePositionPatient
         Image.SliceThickness = dataframe.SliceThickness
-        Image.BodypartExamined = dataframe.BodyPartExamined
+        Image.BodypartExamined = dataframe.BodyPartExamined if "BodyPartExamined" in dataframe and dataframe.BodyPartExamined else None
         Image.Rows = dataframe.Rows
         Image.Columns = dataframe.Columns
         Image.fk_series_id = series

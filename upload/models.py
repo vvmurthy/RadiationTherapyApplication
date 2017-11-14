@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from users.models import User
+from django.contrib.auth.models import User
 import dicom
 # Create your models here.
 class Patient(models.Model):
@@ -53,7 +53,7 @@ class CTImages(models.Model):
     ImageOrientationPatient = models.CharField(max_length=100)
     ImagePositionPatient = models.CharField(max_length=100)
     SliceThickness = models.CharField(max_length=100)
-    BodypartExamined = models.CharField(max_length=100)
+    BodypartExamined = models.CharField(max_length=100,null=True)
     Rows = models.IntegerField()
     Columns = models.IntegerField()
     fk_series_id = models.ForeignKey(Series)
@@ -72,15 +72,28 @@ class RTStructureSet(models.Model):
     fk_patient_id = models.ForeignKey(Patient)
     fk_user_id = models.ForeignKey(User)
 
+class ROI(models.Model):
+    class Meta:
+        db_table = 'oar_dictionary'
+
+    ROIName = models.CharField(max_length=100,unique=True)
+    ROIDisplayColor = models.CharField(max_length=100)
+
 class RTROI(models.Model):
     class Meta:
         db_table = 'rt_rois'
-    ROIName = models.CharField(max_length=100)
-    ROIDisplayColor = models.CharField(max_length=100)
-    ROINumber = models.CharField(max_length=10)
+
+
+    ROIType = models.CharField(max_length=100)
     Volume = models.FloatField()
     TotalContours = models.IntegerField()
     fk_structureset_id = models.ForeignKey(RTStructureSet)
+    fk_series_id = models.ForeignKey(Series)
+    fk_study_id = models.ForeignKey(Study)
+    fk_patient_id = models.ForeignKey(Patient)
+    fk_user_id = models.ForeignKey(User)
+
+
 
 class RTContour(models.Model):
     class Meta:
@@ -159,3 +172,32 @@ class RTIsDose(models.Model):
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
+
+
+class OVH(models.Model):
+    class Meta:
+        db_table = 'ovh'
+
+    OAR = models.ForeignKey(ROI)
+
+    XValues = models.TextField(null=True)
+    YValues = models.TextField()
+    OverlapArea = models.IntegerField(null=True)
+    fk_study_id = models.ForeignKey(Study)
+
+class STS(models.Model):
+    class Meta:
+        db_table = 'sts'
+
+    OAR = models.ForeignKey(ROI)
+
+class Similarity(models.Model):
+    class Meta:
+        db_table = 'similarity'
+
+    DBStudyID = models.CharField(max_length=100)
+    Similarity = models.FloatField(max_length=200)
+    OVHDisimilarity = models.FloatField(max_length=200)
+    STSDisimilarity = models.FloatField(max_length=200)
+    TargetOAR = models.CharField(max_length=200)
+    fk_study_id = models.ForeignKey(Study)

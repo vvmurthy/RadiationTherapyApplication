@@ -37,33 +37,35 @@ def parse(dicom_dataframe,user,patient,study,series):
             rt_roi.ROINumber = roi.ReferencedROINumber
             # Make a function to calculate the volume of ROI, given its contour information
             # rt_roi.Volume =
-            contour_sequence = roi.ContourSequence
-            rt_roi.Volume = 50
-            rt_roi.TotalContours = len(contour_sequence)
-            rt_roi.fk_structureset_id = structure_set
-            try:
+            if "ContourSequence" in roi:
+                contour_sequence = roi.ContourSequence
+                rt_roi.Volume = 50
+                rt_roi.TotalContours = len(contour_sequence)
+                rt_roi.fk_structureset_id = structure_set
+                rt_roi.fk_series_id = series
+                rt_roi.fk_study_id = study
+                rt_roi.fk_patient_id = patient
+                rt_roi.fk_user_id = user
                 rt_roi.save()
-            except:
-                print('Error')
-                print sys.exc_info()
-                return False
-
-            for contour in contour_sequence:
-                try:
-                    rt_contour = RTContour.objects.get(fk_structureset_id=structure_set,fk_roi_id=rt_roi,ReferencedSOPInstanceUID=contour.ContourImageSequence[0].ReferencedSOPInstanceUID)
-                except:
-                    rt_contour = RTContour()
-                    rt_contour.ContourGeometricType = contour.ContourGeometricType
-                    rt_contour.NumberOfContourPoints = contour.NumberOfContourPoints
-                    rt_contour.ContourData = contour.ContourData
-                    rt_contour.ReferencedSOPClassUID = contour.ContourImageSequence[0].ReferencedSOPClassUID
-                    rt_contour.ReferencedSOPInstanceUID = contour.ContourImageSequence[0].ReferencedSOPInstanceUID
-                    rt_contour.fk_roi_id = rt_roi
-                    rt_contour.fk_structureset_id = structure_set
+                # loop the contour
+                for contour in contour_sequence:
                     try:
+                        rt_contour = RTContour.objects.get(fk_structureset_id=structure_set, fk_roi_id=rt_roi,
+                                                           ReferencedSOPInstanceUID=contour.ContourImageSequence[
+                                                               0].ReferencedSOPInstanceUID)
+                    except ObjectDoesNotExist:
+                        rt_contour = RTContour()
+                        rt_contour.ContourGeometricType = contour.ContourGeometricType
+                        rt_contour.NumberOfContourPoints = contour.NumberOfContourPoints
+                        rt_contour.ContourData = contour.ContourData
+                        rt_contour.ReferencedSOPClassUID = contour.ContourImageSequence[0].ReferencedSOPClassUID
+                        rt_contour.ReferencedSOPInstanceUID = contour.ContourImageSequence[0].ReferencedSOPInstanceUID
+                        rt_contour.fk_roi_id = rt_roi
+                        rt_contour.fk_structureset_id = structure_set
                         rt_contour.save()
-                    except:
-                        print('Error')
-                        print sys.exc_info()
-                        return False
+            else:
+                continue
+
+
+
     return True

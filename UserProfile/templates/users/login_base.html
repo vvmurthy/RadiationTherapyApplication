@@ -1,0 +1,29 @@
+{% load static %}
+
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}" />
+	{% block extra_link %}{% endblock %}
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  		<a class="navbar-brand" href="/home">Radiation Therapy Decision Support</a>
+  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" style="">
+    			<span class="navbar-toggler-icon"></span>
+  		</button>
+
+  		<div class="collapse navbar-collapse" id="navbarColor02">
+   			 <ul class="navbar-nav ml-auto">
+      				<li class="nav-item active">
+        				<a class="nav-link" href="/users/signup">New to DSRT? Sign Up<span class="sr-only">(current)</span></a>
+      				</li>
+    			</ul>
+  		</div>
+	</nav>
+
+	{% block content %}{% endblock %}
+</body>
+
+</html>
