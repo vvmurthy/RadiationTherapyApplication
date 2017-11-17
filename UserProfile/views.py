@@ -11,8 +11,8 @@ from django.shortcuts import render, redirect
 def index(request):
 	return render(request, 'users/options.html')
 
-def login(request):
-	return render(request, 'users/login/login.html')
+#def login(request):
+#	return render(request, 'users/login/login.html')
 
 def signup(request):
 	if request.method == 'POST':
