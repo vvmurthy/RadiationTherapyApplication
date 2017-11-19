@@ -1,5 +1,34 @@
 {% extends 'dsrt/base.html' %}
 
+{% load static %}
+
+{% block extra_link %}<link rel="stylesheet" type="text/css" href="{% static 'general/css/faq.css' %}" />{% endblock %}
+
 {% block content %}
-<p>This is the FAQ page</p>
+<div id="wrapper1" class="jumbotron">
+  <h1 class="centertitle display-5">DSRT Support</h1>
+  <p class="centertitle subtext">Let us provide you the answers to your questions.</p><br>
+</div>
+
+<div id="wrapper2" class="jumbotron">
+  <h1 class="centertitle display-5">Questions You May Have</h1><br><br><br>
+
+  <h5 class="centertitle">How do you make french toast?</h5><br>
+  <p class="centertitle">1) Beat together egg, milk, salt, desired spices and vanilla.</p>
+  <p class="centertitle">2) Heat a lightly oiled griddle or skillet over medium-high heat.</p>
+  <p class="centertitle">3) Dunk each slice of bread in egg mixture, soaking both sides. Place in pan, and cook on both sides until golden. Serve hot.</p>
+
+  <br><br><br>
+
+  <h5 class="centertitle">What is a double rainbow?</h5><br>
+  <p class="centertitle">Well, a double rainbow is a phenomenon of optics that displays a spectrum of light due to the sun shining on droplets of moisture in the atmosphere. Does that explain it?</p>
+
+  <br><br><br>
+
+  <h5 class="centertitle">What is a meme?</h5><br>
+
+  <div id="centerpic">
+    <img src="{% static 'images/explain.jpg' %}" alt="meme" />
+  </div>
+</div>
 {% endblock %}

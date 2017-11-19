@@ -1,0 +1,21 @@
+#wrapper1 {
+	background-color: #F0F0F0;
+	margin: 0px;
+}
+
+#wrapper2 {
+	margin: 0px;
+}
+
+#wrapper3 {
+	background-color: #F0F0F0;
+	margin: 0px;
+}
+
+#wrapper4 {
+	margin: 0px;
+}
+
+.indented {
+	text-indent: 50px;
+}

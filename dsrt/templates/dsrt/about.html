@@ -1,5 +1,44 @@
 {% extends 'dsrt/base.html' %}
 
+{% load static %}
+
+{% block extra_link %}<link rel="stylesheet" type="text/css" href="{% static 'general/css/about.css' %}" />{% endblock %}
+
 {% block content %}
-<p>This is the about page</p>
+
+<!-- WHAT IS DSRT SECTION -->
+<div id="wrapper1" class="jumbotron">
+  <h1 class="centertitle" class="display-5">What is DSRT?</h1><br>
+  <p class="indented">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam scelerisque nunc quis ipsum eleifend condimentum. Proin pulvinar sapien id lectus egestas interdum. Suspendisse id lacus ac sem feugiat malesuada. Donec facilisis libero non dolor dignissim fringilla. In felis ex, convallis non erat et, ullamcorper posuere lorem. Phasellus mauris risus, congue a eleifend non, feugiat a nibh. Nullam eget mollis ligula. Curabitur varius at leo vitae blandit. Fusce vehicula mattis nibh vitae tincidunt. Vestibulum odio leo, lacinia id ipsum id, scelerisque tempus justo. Fusce quis mattis dui. Nam ac dapibus tellus, nec lacinia quam. Sed cursus facilisis nisi, non luctus sapien congue a.
+  </p>
+  <p class="indented">Aliquam porta egestas quam, ac suscipit lorem imperdiet ac. Vestibulum risus justo, tincidunt ac tincidunt non, dignissim vestibulum neque. Nulla et vulputate ex. Integer rhoncus, nisi vitae pharetra bibendum, enim elit consequat lectus, eu rhoncus diam ligula non eros. Maecenas vel diam quam. Etiam quis felis dapibus, commodo eros id, consectetur sapien. Aliquam at facilisis magna, quis vulputate enim. Phasellus eu gravida nisl, ut fringilla ipsum. 
+  </p>
+</div>
+
+<!-- WHAT DOES IT DO SECTION -->
+<div id="wrapper2" class="jumbotron">
+  <h1 class="centertitle" class="display-5">What does it do?</h1><br>
+  <p class="indented">Nullam metus turpis, ultrices nec erat non, convallis faucibus velit. Vivamus euismod dolor odio, at tempus odio varius dapibus. Vivamus posuere turpis sit amet lacus bibendum, vel pharetra ipsum interdum. Donec tellus odio, malesuada eu auctor ac, convallis interdum turpis. Etiam non metus orci. Nullam aliquam mattis tellus, id aliquet augue viverra non. Suspendisse sed pretium mi. Aliquam rhoncus mattis lorem, et fringilla leo cursus eu. Vestibulum fermentum, diam vitae condimentum faucibus, dolor massa tincidunt nisi, id ultrices lectus nulla a mi. Mauris vel mauris ligula. Sed eget gravida risus, et ultrices sapien.
+  </p><br>
+  <div id="moreinfo"><a class="btn btn-primary btn-md" href="/features">More Info</a></div>
+</div>
+
+<!-- CONTACT US SECTION -->
+<div id="wrapper3" class="jumbotron">
+  <h1 class="centertitle" class="display-5">Contact Us</h1><br>
+  <p class="centertitle">Project Lead: Slevin Zhang (Si Liang)</p>
+  <p class="centertitle">Email: FakeEmail@usc.edu</p>
+  <br>
+  <p class="centertitle">Alan Cheng</p>
+  <p class="centertitle">Email: FakeEmail2@usc.edu</p>
+  <br>
+  <p class="centertitle">Veda Murthy</p>
+  <p class="centertitle">Email: AnotherFakeEmail@usc.edu</p>
+  <br>
+  <p class="centertitle">Natalie Ramsy</p>
+  <p class="centertitle">Email: WoahYetAnotherFakeEmail@usc.edu</p>
+  <br>
+  <p class="centertitle">Piyush Maiti</p>
+  <p class="centertitle">Email: NotAFakeJustKiddingItsAFakeEmail@usc.edu</p>
+</div>
 {% endblock %}

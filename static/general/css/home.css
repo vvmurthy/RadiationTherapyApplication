@@ -1,0 +1,13 @@
+#campus {
+	width: 100%;
+	height: 100%;
+}
+
+#title1 {
+	text-align: center;
+}
+
+#questionsbutton {
+	display: flex;
+	justify-content: center;
+}

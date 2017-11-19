@@ -1,0 +1,21 @@
+#wrapper1 {
+	margin: 0px;
+}
+
+#wrapper2 {
+	background-color: #F0F0F0;
+	margin: 0px;
+}
+
+.centertitle {
+	text-align: center;
+}
+
+.subtext {
+	font-size: 18px;
+}
+
+#centerpic {
+	display: flex;
+	justify-content: center;
+}

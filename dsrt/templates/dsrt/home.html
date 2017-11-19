@@ -1,5 +1,16 @@
 {% extends 'dsrt/base.html' %}
 
+{% load static %}
+
+{% block extra_link %}<link rel="stylesheet" type="text/css" href="{% static 'general/css/home.css' %}" />{% endblock %}
+
 {% block content %}
-<p>This is the homepage</p>
+<img src="{% static "images/usc_campus.jpg" %}" id="campus" alt="usc campus" />
+<div class="jumbotron">
+  <h1 id="title1" class="display-5">Radiation Therapy Decision Support</h1><br>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam scelerisque nunc quis ipsum eleifend condimentum. Proin pulvinar sapien id lectus egestas interdum. Suspendisse id lacus ac sem feugiat malesuada. Donec facilisis libero non dolor dignissim fringilla. In felis ex, convallis non erat et, ullamcorper posuere lorem. Phasellus mauris risus, congue a eleifend non, feugiat a nibh. Nullam eget mollis ligula. Curabitur varius at leo vitae blandit. Fusce vehicula mattis nibh vitae tincidunt. Vestibulum odio leo, lacinia id ipsum id, scelerisque tempus justo. Fusce quis mattis dui. Nam ac dapibus tellus, nec lacinia quam. Sed cursus facilisis nisi, non luctus sapien congue a.</p>
+<br>
+<div id="questionsbutton"><a class="btn btn-primary btn-md" href="/faq">Questions?</a></div>
+
+</div>
 {% endblock %}

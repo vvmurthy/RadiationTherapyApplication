@@ -1,0 +1,27 @@
+#wrapper1 {
+	background-color: #F0F0F0;
+	margin: 0px;
+}
+
+#wrapper2 {
+	background-color: #FFE5E5;
+	margin: 0px;
+}
+
+#wrapper3 {
+	background-color: #FFFAE0;
+	margin: 0px;
+}
+
+.indented {
+	text-indent: 50px;
+}
+
+.centertitle {
+	text-align: center;
+}
+
+#moreinfo {
+	display: flex;
+	justify-content: center;
+}

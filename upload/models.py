@@ -84,9 +84,10 @@ class RTROI(models.Model):
         db_table = 'rt_rois'
 
 
-    ROIType = models.CharField(max_length=100)
+    ROIName = models.CharField(max_length=100)
     Volume = models.FloatField()
     TotalContours = models.IntegerField()
+    ROINumber = models.CharField(max_length=200,null=True)
     fk_structureset_id = models.ForeignKey(RTStructureSet)
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
@@ -178,18 +179,28 @@ class OVH(models.Model):
     class Meta:
         db_table = 'ovh'
 
-    OAR = models.ForeignKey(ROI)
-
-    XValues = models.TextField(null=True)
-    YValues = models.TextField()
+    binValue = models.TextField(null=True)
+    binAmount = models.TextField(null=True)
     OverlapArea = models.IntegerField(null=True)
+    #to specify the ptv_id and oar_id for ovh
+    ptv_id = models.IntegerField(null=True)
+    OAR_id = models.IntegerField(null=True)
     fk_study_id = models.ForeignKey(Study)
 
+
+#a Model to store sts
 class STS(models.Model):
     class Meta:
         db_table = 'sts'
 
-    OAR = models.ForeignKey(ROI)
+    elevation_bins = models.TextField(null=True)
+    distance_bins = models.TextField(null=True)
+    azimuth_bins = models.TextField(null=True)
+    amounts = models.TextField(null=True)
+    #to specify which ptv and which oar
+    ptv_id = models.IntegerField(null=True)
+    OAR_id = models.IntegerField(null=True)
+    fk_study_id = models.ForeignKey(Study)
 
 class Similarity(models.Model):
     class Meta:

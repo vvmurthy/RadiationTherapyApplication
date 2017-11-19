@@ -1,7 +1,7 @@
 import sys
 
 from django.core.exceptions import ObjectDoesNotExist
-
+import numpy as np
 import utils
 from upload.models import RTROI, RTContour
 from upload.models import RTStructureSet
@@ -32,7 +32,7 @@ def parse(dicom_dataframe,user,patient,study,series):
         except ObjectDoesNotExist:
             rt_roi = RTROI()
             rt_roi.ROIName = [x.ROIName for x in roi_label_sequence if
-                              x.ROINumber == roi.ReferencedROINumber]
+                              x.ROINumber == roi.ReferencedROINumber][0]
             rt_roi.ROIDisplayColor = roi.ROIDisplayColor
             rt_roi.ROINumber = roi.ReferencedROINumber
             # Make a function to calculate the volume of ROI, given its contour information
@@ -53,16 +53,25 @@ def parse(dicom_dataframe,user,patient,study,series):
                         rt_contour = RTContour.objects.get(fk_structureset_id=structure_set, fk_roi_id=rt_roi,
                                                            ReferencedSOPInstanceUID=contour.ContourImageSequence[
                                                                0].ReferencedSOPInstanceUID)
+                        if rt_contour.ContourData != contour.ContourData:
+                            rt_contour.NumberOfContourPoints += int(contour.NumberOfContourPoints)
+                            contourarray = np.array(contour.ContourData)
+                            contourString = ','.join([str(contourpoint) for contourpoint in contourarray])
+                            rt_contour.ContourData = rt_contour.ContourData + ',' + contourString
+                            rt_contour.save()
+
                     except ObjectDoesNotExist:
                         rt_contour = RTContour()
                         rt_contour.ContourGeometricType = contour.ContourGeometricType
                         rt_contour.NumberOfContourPoints = contour.NumberOfContourPoints
-                        rt_contour.ContourData = contour.ContourData
+                        contourarray = np.array(contour.ContourData)
+                        rt_contour.ContourData = ','.join([str(contourpoint) for contourpoint in contourarray])
                         rt_contour.ReferencedSOPClassUID = contour.ContourImageSequence[0].ReferencedSOPClassUID
                         rt_contour.ReferencedSOPInstanceUID = contour.ContourImageSequence[0].ReferencedSOPInstanceUID
                         rt_contour.fk_roi_id = rt_roi
                         rt_contour.fk_structureset_id = structure_set
                         rt_contour.save()
+
             else:
                 continue
 

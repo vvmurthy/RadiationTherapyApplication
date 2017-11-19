@@ -1,5 +1,35 @@
 {% extends 'dsrt/base.html' %}
 
+{% load static %}
+
+{% block extra_link %}<link rel="stylesheet" type="text/css" href="{% static 'general/css/features.css' %}" />{% endblock %}
+
 {% block content %}
-<p>This is the features page</p>
+<div id="wrapper1" class="jumbotron">
+  <h1 class="display-5">Feature #1</h1><br>
+  <p class="indented">
+  Duis cursus leo eros, faucibus malesuada lacus tempus eu. Aliquam euismod ligula quis auctor ultricies. Quisque ornare posuere nisi, sit amet commodo urna cursus at. Nunc purus lectus, vehicula eu aliquet quis, finibus nec elit. Vivamus ut vestibulum lorem. Sed vel sem luctus, rutrum dolor id, tincidunt metus. Sed nec suscipit neque. Pellentesque mauris nulla, auctor sit amet imperdiet nec, dictum quis felis. Fusce pulvinar ipsum eget elit rutrum luctus. Vivamus eu vestibulum risus.
+  </p>
+</div>
+
+<div id="wrapper2" class="jumbotron">
+  <h1 class="display-5">Feature #2</h1><br>
+  <p class="indented">
+  Vivamus venenatis, velit molestie facilisis porttitor, mi erat mollis ante, ut dapibus tellus diam ut neque. Sed tincidunt luctus egestas. Mauris mollis tortor velit, et elementum sem dignissim sit amet. Aliquam malesuada porttitor eros, a elementum ante tincidunt eu. Proin ultrices lectus leo, id auctor justo elementum sit amet. Maecenas gravida mi sit amet magna scelerisque, nec scelerisque quam tempus. Integer et mi porta, dictum sapien sed, iaculis nunc. Nullam lacinia nunc a tellus mollis, vitae malesuada libero tempor. Mauris pretium magna erat, et fermentum tellus mollis sed. Proin eleifend tempor lacus, placerat rutrum dui facilisis ut. Duis viverra elementum felis ac dictum. Duis ac mi rutrum, elementum felis hendrerit, venenatis ante.
+  </p>
+</div>
+
+<div id="wrapper3" class="jumbotron">
+  <h1 class="display-5">Feature #3</h1><br>
+  <p class="indented">
+  Cras tincidunt bibendum urna, nec maximus urna sagittis vitae. Sed porta, enim a mattis hendrerit, turpis nunc tristique risus, vitae eleifend velit sapien at diam. Suspendisse vel ipsum ut ex eleifend gravida ac eu eros. Sed vulputate ex eu maximus ultricies. Nulla ultrices vestibulum purus et placerat. Donec sodales nibh in lectus eleifend, eget dapibus lorem vestibulum. Integer et sem mauris. Fusce finibus leo lorem, at commodo massa accumsan nec. Sed ullamcorper neque vel est aliquam, non vestibulum orci fringilla. Fusce lobortis arcu dignissim, ultricies orci a, pretium purus. Aenean convallis scelerisque quam nec egestas. Sed iaculis semper consequat. Proin enim tellus, semper quis commodo vitae, tincidunt ut mi. 
+  </p>
+</div>
+
+<div id="wrapper4" class="jumbotron">
+  <h1 class="display-5">Feature #4</h1><br>
+  <p class="indented">
+  Suspendisse potenti. Aliquam quis justo luctus, aliquet sem vel, condimentum risus. Fusce sodales laoreet mauris, ut ultrices ligula sollicitudin eget. Aliquam sed viverra mi, ut porttitor est. Pellentesque eu libero tincidunt, cursus nunc porta, egestas ex. Maecenas ornare non velit at dictum. Nullam mollis enim eget leo venenatis, et ultrices odio euismod. Donec volutpat egestas rutrum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed ultricies vestibulum tortor, ut malesuada ante. Nam egestas, lacus sit amet cursus laoreet, erat massa vestibulum libero, nec placerat neque erat eget magna. Aenean finibus, leo et semper fermentum, dolor turpis condimentum elit, id dictum libero lacus ut velit. 
+  </p>
+</div>
 {% endblock%}

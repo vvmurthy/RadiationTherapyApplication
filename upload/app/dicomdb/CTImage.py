@@ -1,6 +1,7 @@
 from upload.models import CTImages
 from django.core.exceptions import ObjectDoesNotExist
 import sys
+import numpy as np
 
 def parse(dataframe, user, patient, study, series):
     try:
@@ -14,9 +15,9 @@ def parse(dataframe, user, patient, study, series):
         Image.RescaleSlope = dataframe.RescaleSlope
         Image.RescaleIntercept = dataframe.RescaleIntercept
         Image.SliceLocation = dataframe.SliceLocation
-        Image.PixelSpacing = dataframe.PixelSpacing
-        Image.ImageOrientationPatient = dataframe.ImageOrientationPatient
-        Image.ImagePositionPatient = dataframe.ImagePositionPatient
+        Image.PixelSpacing = ','.join([str(point) for point in np.array(dataframe.PixelSpacing)])
+        Image.ImageOrientationPatient = ','.join([str(point) for point in np.array(dataframe.ImageOrientationPatient)])
+        Image.ImagePositionPatient = ','.join([str(point) for point in np.array(dataframe.ImagePositionPatient)])
         Image.SliceThickness = dataframe.SliceThickness
         Image.BodypartExamined = dataframe.BodyPartExamined if "BodyPartExamined" in dataframe and dataframe.BodyPartExamined else None
         Image.Rows = dataframe.Rows
