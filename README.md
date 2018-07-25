@@ -58,6 +58,11 @@ Then connect to the webpage using whichever ip your computer is linked against.
 
 at the end of the file
 
+#### Changing Frontend (CSS / HTML / JS)
+To see changes to css / js reload webpage with `CTRL + F5` (Chrome)
+CSS is from the `stylesheet` declared at the top of the html file
+
+
 ### Sample Log In for Reference (Deployed) instance
 
 If you would like to log in, the sample user's info is as follows:
