@@ -33,7 +33,12 @@ SECRET_KEY = 't(p=3!2#d236!gmafl839x_ca$dyz@c!d1x%tq9tpqytl&xcl#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['68.181.174.158', 'egg120-9.usc.edu']
+if os.path.exists(BASE_DIR + "/ip.txt"):
+    with open(BASE_DIR + "/ip.txt") as f:
+        ALLOWED_HOSTS = f.readlines()
+        ALLOWED_HOSTS = [x.strip() for x in ALLOWED_HOSTS]
+else:
+    ALLOWED_HOSTS = ['68.181.174.158', 'egg120-9.usc.edu']
 
 
 # Application definition
@@ -64,7 +69,7 @@ ROOT_URLCONF = 'dsrt.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/home/ipilab/dsrt/dsrt/templates/'],
+        'DIRS': [BASE_DIR + '/dsrt/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,6 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-import utils
+try:
+	from utils import *
+except ImportError:
+	from .utils import *
 from upload.models import RTDVH
 from upload.models import RTDose
 from upload.models import RTDoseImage

@@ -2,7 +2,10 @@ import sys
 
 from django.core.exceptions import ObjectDoesNotExist
 import numpy as np
-import utils
+try:
+	from utils import *
+except ImportError:
+	from .utils import *
 from upload.models import RTROI, RTContour
 from upload.models import RTStructureSet
 

@@ -29,7 +29,7 @@ def parse(dataframe, user, patient, study, series):
     try:
         Image.save()
     except:
-        print sys.exc_info()
+        print(sys.exc_info())
         return False
 
     return True

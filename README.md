@@ -24,7 +24,41 @@ You can then connect at your client-side browser by typing at the URL:
 ```
 which should redirect you to the home page of the website. 
 
-### Sample Log In
+#### How to develop
+
+Instructions are currently written only for an ubuntu setup
+
+0) in the terminal, install django and celery:
+```
+$ pip3 install django==1.11.6
+$ pip3 install celery==4.1.0
+```
+1) Create a file `ip.txt` with 1 line, containing your ip address of the computer
+you wish to test on. 
+2) Set up mysql, with a root account with a password, default port. Set up `/etc/mysql/my.cnf/` with
+```
+[client]
+user=root
+password={PASSWORD}
+``` 
+3) Create the database in the terminal
+```
+$ mysql
+$ create database dsrt;
+```
+4) Create tables in the database using django
+```
+$ python3 manage.py migrate
+```
+5) Run
+```
+$ python3 manage.py runserver 0.0.0.0:8000
+```
+Then connect to the webpage using whichever ip your computer is linked against.
+
+at the end of the file
+
+### Sample Log In for Reference (Deployed) instance
 
 If you would like to log in, the sample user's info is as follows:
 Username: user

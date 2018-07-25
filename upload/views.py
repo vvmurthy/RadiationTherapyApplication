@@ -17,8 +17,10 @@ import dicom
 sys.path.append(BASE_DIR + '/upload/app/')
 import glob
 import dicomdb
-from tasks import uploader_task
-
+try:
+	from tasks import uploader_task
+except ImportError:
+	from .tasks import uploader_task
 
 # Create your views here.
 # Process the uploaded dicom files

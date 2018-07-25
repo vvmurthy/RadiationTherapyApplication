@@ -1,7 +1,13 @@
 import os
 os.environ["DJANGO_SETTINGS_MODULE"] = './../../../dsrt/settings.py'
 from upload.models import Patient, Study, Series
-import CTImage,RPPlan,RTDose,RTStructureset
+try:
+	import CTImage,RPPlan,RTDose,RTStructureset
+except ImportError:
+	from .CTImage import *
+	from .RPPlan import *
+	from .RTDose import *
+	from .RTStructureset import *
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib.auth.models import User
