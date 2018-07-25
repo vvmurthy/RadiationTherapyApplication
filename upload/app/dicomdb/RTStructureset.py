@@ -17,7 +17,7 @@ def parse(dicom_dataframe,user,patient,study,series):
         structure_set = RTStructureSet()
         structure_set.SOPInstanceUID = dicom_dataframe.SOPInstanceUID
         structure_set.SOPClassUID = dicom_dataframe.SOPClassUID
-        structure_set.TotalROIs = utils.count_rois(dicom_dataframe)
+        structure_set.TotalROIs = count_rois(dicom_dataframe)
         structure_set.fk_series_id = series
         structure_set.fk_study_id = study
         structure_set.fk_patient_id = patient

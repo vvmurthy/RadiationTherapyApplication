@@ -17,18 +17,31 @@
 
   		<div class="collapse navbar-collapse" id="navbarColor01">
     			<ul class="navbar-nav mr-auto">
-      				<li class="nav-item active">
-        				<a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
-      				</li>
-      				<li class="nav-item">
-        				<a class="nav-link" href="/about">About</a>
-      				</li>
-      				<li class="nav-item">
-        				<a class="nav-link" href="/features">Features</a>
-      				</li>
-      				<li class="nav-item">
-        				<a class="nav-link" href="/faq">FAQ</a>
-      				</li>
+						<li class="nav-item active">
+								<a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+						</li>
+					{% if user.is_authenticated %}
+						<li class="nav-item">
+							<a class="nav-link" href="#">View Patients</a>
+					    </li>
+				   	    <li class="nav-item">
+							<a class="nav-link" href="#">Similar Cases</a>
+						</li>
+					{% else %}
+						<li class="nav-item active">
+							<a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/about">About</a>
+					    </li>
+				   	    <li class="nav-item">
+							<a class="nav-link" href="/features">Features</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/faq">FAQ</a>
+						</li>
+					{% endif %}
+      				
     			</ul>
 				<ul class="navbar-nav ml-auto">
 					{% if user.is_authenticated %}
@@ -38,7 +51,7 @@
 							<ul class="dropdown-menu">
 									
 									<li class="nav-item">
-											<a class="nav-link" href="#">Upload</a>
+											<a class="nav-link" href="/upload">Upload</a>
 									</li>
 									<li class="nav-item">
 											<a class="nav-link" href="#">Settings</a>
@@ -47,7 +60,8 @@
 											<a class="nav-link" href="/users/logout">Logout</a>
 									</li>
 								</li>
-							</ul> 
+							</ul>
+						</li> 
 					{% else %}
 						<li class="nav-item">
 						<a class="nav-link" href="/users/signup">Sign Up</a>

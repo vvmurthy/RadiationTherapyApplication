@@ -32,6 +32,8 @@ Instructions are currently written only for an ubuntu setup
 ```
 $ pip3 install django==1.11.6
 $ pip3 install celery==4.1.0
+$ pip3 install redis
+$ sudo apt-get install redis-server
 ```
 1) Create a file `ip.txt` with 1 line, containing your ip address of the computer
 you wish to test on. 
@@ -48,12 +50,16 @@ $ create database dsrt;
 ```
 4) Create tables in the database using django
 ```
+$ python3 manage.py makemigrations upload
+$ python3 manage.py makemigrations UserProfile
 $ python3 manage.py migrate
 ```
 5) Run
 ```
+$ sudo service redis-server start 
 $ python3 manage.py runserver 0.0.0.0:8000
 ```
+or just run `sh run.sh`
 Then connect to the webpage using whichever ip your computer is linked against.
 
 at the end of the file

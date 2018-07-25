@@ -10,8 +10,9 @@ from django.dispatch import receiver
 # Create your models here.
 
 class UserProfile(models.Model):
+	class Meta:
+		db_table = 'UserProfile'
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-
 	occupation = models.CharField(max_length=30, blank=True)
 	institution = models.CharField(max_length=30, blank=True)
 	birthday = models.DateField(null=True, blank=True)

@@ -27,13 +27,12 @@ except ImportError:
 # Store the information into the database
 def processUploadedFile(raw_file_path, patientName, user_id):
     # the input is a zip file
-    zipObject = zipfile.ZipFile(raw_file_path.encode('utf8'), 'r')  # create zipfile object
-    # unzip the file in a folder named by patientName
-    directory_extract_to = os.path.join(STATIC_ROOT, 'data', str(user_id), patientName)
-    if not os.path.exists(directory_extract_to):
-        os.makedirs(directory_extract_to)
-    zipObject.extractall(directory_extract_to)
-    zipObject.close()
+    with zipfile.ZipFile(raw_file_path, 'r') as zipObject:  # create zipfile object
+        # unzip the file in a folder named by patientName
+        directory_extract_to = os.path.join(STATIC_ROOT, 'data', str(user_id), patientName)
+        if not os.path.exists(directory_extract_to):
+            os.makedirs(directory_extract_to)
+        zipObject.extractall(directory_extract_to)
     # Process the dicom files to give the output
 
     rootDir = os.path.join(STATIC_ROOT, 'data', str(user_id),
@@ -46,16 +45,16 @@ def uploadForm(request):
     # Get the user upload the files
     # user = request.POST['user']
     if request.method == 'POST':  # check whether a form has been submitted
-        html = ''
         # !!we should let user to type in the name of the file
         patientName = request.POST['patientName']
         uploadedFileObject = request.FILES['dcmZipFile']
         # send file object to new function for processing
+        if not os.path.exists(os.path.join(STATIC_ROOT, 'raw')):
+            os.mkdir(os.path.join(STATIC_ROOT, 'raw'))
         raw_file_path = os.path.join(STATIC_ROOT, 'raw', uploadedFileObject.name)
         # where the uploaded file is first stored
 
         (name, ext) = os.path.splitext(raw_file_path)
-        print(ext)
         if ext == '.zip':
             with open(raw_file_path, 'wb+') as destination:  # write the uploaded file to the raw directory
                 for chunk in uploadedFileObject.chunks():
@@ -65,6 +64,7 @@ def uploadForm(request):
 
         # Does not handle no DICOM files being included in the zip file
         # raw_file_path is the zip file
+        import pdb ; pdb.set_trace()
         res = processUploadedFile(raw_file_path, patientName, 1)
 
         # Delete the files in the raw folder

@@ -1,2 +1,3 @@
 *.pyc
 ip.txt
+__pycache__/

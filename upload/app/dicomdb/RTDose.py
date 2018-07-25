@@ -73,4 +73,4 @@ def parse(dataframe,user,patient,study,series):
             dvh.fk_dose_id = dose
             dvh.save()
 
-    IsdoseSequence = utils.getIsodose(dataframe)
+    IsdoseSequence = getIsodose(dataframe)
