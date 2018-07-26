@@ -18,7 +18,7 @@ def count_rois(dicom_dataframe):
 
 def getIsodose(dataframe,user,patient):
     DataPath = os.path.join(STATIC_ROOT,'data',str(user.userid),patient.PatientName)
-    imageBlock,SOPID = getImageBlock()
+    imageBlock,SOPID = getImageBlock(patient.patientID, DataPath)
     isodoseDict = _getIsodose(dataframe,SOPID)
     return isodoseDict
 

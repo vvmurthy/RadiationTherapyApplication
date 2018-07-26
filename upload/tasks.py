@@ -21,8 +21,6 @@ import dicomdb
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE','dsrt.settings')
 
-
-
 @task(name="analyse dicom file and store it into data")
 def uploader_task(rootDir, user_id, patientName):
 

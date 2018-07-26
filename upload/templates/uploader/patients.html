@@ -1,0 +1,33 @@
+{% extends "dsrt/base.html" %}
+{% block content %}
+    <h4>All Patients from hospital: {{hospital}} </h4>
+
+    <table>
+        <tr>
+            <th>Patient Name</th>
+            <th>Ethnic Group</th>
+            <th>Birthdate</th>
+            <th>Gender</th>
+            {% if user.is_superuser %}
+            <th>Hospital</th>
+            {% endif %}
+        </tr>
+    
+        {% for element in patients %}
+        <tr>
+            <td>
+                <a href="/upload/patients/data/{{element.id}}">
+                    <div>{{element.PatientName}}</div>
+                </a>
+            </td>
+            <td>{{element.EthnicGroup}}</td>
+            <td>{{element.BirthDate}}</td>
+            <td>{{element.Gender}}</td>
+            {% if user.is_superuser %}
+            <td>{{element.fk_hospital_id}}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    
+{% endblock %}

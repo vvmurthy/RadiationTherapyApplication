@@ -3,7 +3,9 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
+from UserProfile.models import Hospital
 import dicom
+
 # Create your models here.
 class Patient(models.Model):
     class Meta:
@@ -11,8 +13,11 @@ class Patient(models.Model):
     PatientName = models.CharField(max_length=200)
     BirthDate = models.DateField(null=True)
     Gender = models.CharField(max_length=20,null=True)
-    EnthicGroup = models.CharField(max_length=200,null=True)
-    fk_user_id = models.ForeignKey(User)
+    EthnicGroup = models.CharField(max_length=200,null=True)
+    fk_hospital_id = models.ForeignKey(Hospital)
+
+    def __str__(self):
+        return self.PatientName
 
 class Study(models.Model):
     class Meta:
@@ -22,7 +27,6 @@ class Study(models.Model):
     StudyDescription = models.CharField(max_length=200,null=True)
     TotalSeries = models.IntegerField()
     fk_patient_id = models.ForeignKey(Patient)
-    fk_user_id = models.ForeignKey(User)
 
 class Series(models.Model):
     class Meta:
@@ -37,7 +41,6 @@ class Series(models.Model):
     Manufacturer = models.CharField(max_length=50,null=True)
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
-    fk_user_id = models.ForeignKey(User)
 
 class CTImages(models.Model):
     class Meta:
@@ -59,7 +62,6 @@ class CTImages(models.Model):
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
-    fk_user_id = models.ForeignKey(User)
 
 class RTStructureSet(models.Model):
     class Meta:
@@ -70,7 +72,6 @@ class RTStructureSet(models.Model):
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
-    fk_user_id = models.ForeignKey(User)
 
 class ROI(models.Model):
     class Meta:
@@ -92,9 +93,6 @@ class RTROI(models.Model):
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
-    fk_user_id = models.ForeignKey(User)
-
-
 
 class RTContour(models.Model):
     class Meta:
@@ -121,7 +119,6 @@ class RTDose(models.Model):
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
-    fk_user_id = models.ForeignKey(User)
 
 class RTDoseImage(models.Model):
     class Meta:
@@ -138,7 +135,6 @@ class RTDoseImage(models.Model):
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
-    fk_user_id = models.ForeignKey(User)
 
 class RTDVH(models.Model):
     class Meta:
@@ -158,12 +154,11 @@ class RTDVH(models.Model):
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
-    fk_user_id = models.ForeignKey(User)
 
 
-class RTIsDose(models.Model):
+class RTIsoDose(models.Model):
     class Meta:
-        db_table = 'rt_isdose'
+        db_table = 'rt_isodose'
 
     RowPosition = models.TextField()
     ColumnPosition = models.TextField()
@@ -174,17 +169,17 @@ class RTIsDose(models.Model):
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
 
-
 class OVH(models.Model):
     class Meta:
         db_table = 'ovh'
 
-    binValue = models.TextField(null=True)
-    binAmount = models.TextField(null=True)
+    bin_value = models.TextField(null=True)
+    bin_amount = models.TextField(null=True)
     OverlapArea = models.IntegerField(null=True)
+
     #to specify the ptv_id and oar_id for ovh
     ptv_id = models.IntegerField(null=True)
-    OAR_id = models.IntegerField(null=True)
+    oar_id = models.IntegerField(null=True)
     fk_study_id = models.ForeignKey(Study)
 
 
@@ -197,9 +192,11 @@ class STS(models.Model):
     distance_bins = models.TextField(null=True)
     azimuth_bins = models.TextField(null=True)
     amounts = models.TextField(null=True)
+    
     #to specify which ptv and which oar
+    # TODO: These should be OneToOne fields linking against ROI
     ptv_id = models.IntegerField(null=True)
-    OAR_id = models.IntegerField(null=True)
+    oar_id = models.IntegerField(null=True)
     fk_study_id = models.ForeignKey(Study)
 
 class Similarity(models.Model):

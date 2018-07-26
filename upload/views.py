@@ -8,8 +8,10 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 import MySQLdb as db
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from dsrt.settings import STATIC_ROOT
 from dsrt.settings import BASE_DIR
+from UserProfile.models import UserProfile
 import zipfile
 import sys
 import dicom
@@ -17,10 +19,23 @@ import dicom
 sys.path.append(BASE_DIR + '/upload/app/')
 import glob
 import dicomdb
-try:
-	from tasks import uploader_task
-except ImportError:
-	from .tasks import uploader_task
+from .tasks import uploader_task
+from .models import Patient
+
+@login_required
+def view_patient(request, slug):
+    return HttpResponse("something")
+
+@login_required
+def view_patients(request):
+    hospital = "All Hospitals"
+    if not request.user.is_superuser:
+        profile = UserProfile.objects.get(user=request.user)
+        patients = Patient.objects.filter(fk_hospital_id=profile.institution)
+        hospital = profile.institution.name
+    else:
+        patients = Patient.objects.all()
+    return render(request, "uploader/patients.html", {'patients':patients, 'hospital':hospital})
 
 # Create your views here.
 # Process the uploaded dicom files
@@ -38,15 +53,22 @@ def processUploadedFile(raw_file_path, patientName, user_id):
     rootDir = os.path.join(STATIC_ROOT, 'data', str(user_id),
                            patientName)  # set the directory you want to start from
     r = uploader_task.delay(rootDir, user_id, patientName)
+    #r = uploader_task(rootDir, user_id, patientName)
     return r
 
-
+@login_required
 def uploadForm(request):
     # Get the user upload the files
     # user = request.POST['user']
+    profile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST':  # check whether a form has been submitted
-        # !!we should let user to type in the name of the file
+
+        # Check that user has assigned hospital.
+        if not profile.institution:
+            return HttpResponse("Please enter hospital affiliation in options")
         patientName = request.POST['patientName']
+        if not patientName:
+            return HttpResponse("Please Enter Patient Name in left hand text box")
         uploadedFileObject = request.FILES['dcmZipFile']
         # send file object to new function for processing
         if not os.path.exists(os.path.join(STATIC_ROOT, 'raw')):
@@ -64,8 +86,8 @@ def uploadForm(request):
 
         # Does not handle no DICOM files being included in the zip file
         # raw_file_path is the zip file
-        import pdb ; pdb.set_trace()
-        res = processUploadedFile(raw_file_path, patientName, 1)
+        user_id = request.user.id
+        res = processUploadedFile(raw_file_path, patientName, user_id)
 
         # Delete the files in the raw folder
         folder_path = os.path.join(STATIC_ROOT, 'raw')
@@ -81,4 +103,4 @@ def uploadForm(request):
         # return HttpResponse("Upload \n {}, {}, {}".format(res.status,res.id,res.get()))
         return HttpResponse("upload successfully")
     else:
-        return render(request, 'uploader/uploader.html')
+        return render(request, 'uploader/uploader.html', {'hospital':profile.institution})

@@ -1,8 +1,23 @@
-<html>
-<head>
-</head>
+{% extends 'dsrt/base.html' %}
+{% load static %}
 
-<body>
-	<p>This is the options page</p>
-</body>
-</html>
+{% block extra_link %}
+<link rel="stylesheet" type="text/css" href="{% static 'userprofile/css/login.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<div class="login-wrapper">
+	<h2>Update Account Settings</h2><br>
+
+	<h4>Update Profile Information</h4><br>
+	<form method="POST">
+	  {% csrf_token %}
+	  {{ form.as_p }}
+	  <br><button class="btn btn-success" type="submit">Update Information</button>
+	</form>
+
+	<h4>Update User Information</h4><br>
+
+  </div>
+{% endblock %}

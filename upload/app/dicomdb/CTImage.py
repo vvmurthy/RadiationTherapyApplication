@@ -25,7 +25,6 @@ def parse(dataframe, user, patient, study, series):
         Image.fk_series_id = series
         Image.fk_study_id = study
         Image.fk_patient_id = patient
-        Image.fk_user_id = user
     try:
         Image.save()
     except:

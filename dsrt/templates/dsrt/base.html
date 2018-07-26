@@ -22,15 +22,12 @@
 						</li>
 					{% if user.is_authenticated %}
 						<li class="nav-item">
-							<a class="nav-link" href="#">View Patients</a>
+							<a class="nav-link" href="/upload/patients">View Patients</a>
 					    </li>
 				   	    <li class="nav-item">
 							<a class="nav-link" href="#">Similar Cases</a>
 						</li>
 					{% else %}
-						<li class="nav-item active">
-							<a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
-						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/about">About</a>
 					    </li>
@@ -54,7 +51,7 @@
 											<a class="nav-link" href="/upload">Upload</a>
 									</li>
 									<li class="nav-item">
-											<a class="nav-link" href="#">Settings</a>
+											<a class="nav-link" href="/users/options">Options</a>
 									</li>
 									<li class="nav-item">
 											<a class="nav-link" href="/users/logout">Logout</a>

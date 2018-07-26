@@ -11,26 +11,44 @@ except ImportError:
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib.auth.models import User
+from UserProfile.models import UserProfile
 type_dict = {
     'RTSTRUCT': RTStructureset,
     'RTDOSE': RTDose,
     'RTPLAN': RPPlan,
     'CT'    : CTImage
 }
+
+def make_patient(dicom_dataframe, patientName, profile):
+    patient = Patient()
+    patient.PatientName = str(patientName)
+    patient.BirthDate = datetime.datetime.strptime(dicom_dataframe.PatientBirthDate, "%Y%m%d").date() if ("PatientBirthDate" in dicom_dataframe) and dicom_dataframe.PatientBirthDate else None
+    patient.Gender = str(dicom_dataframe.PatientSex) if "PatientSex" in dicom_dataframe else None
+    patient.EthnicGroup = str(dicom_dataframe.EthnicGroup) if "EthnicGroup" in dicom_dataframe else None
+    patient.fk_hospital_id = profile.institution
+    patient.save()
+    return patient
+
 def parse(dicom_dataframe,user_id,patientName):
     #do the first three step and call different method to do the different thing
-    user = User.objects.get(pk = user_id)
+    user = User.objects.get(pk=user_id)
+    profile = UserProfile.objects.get(user=user)
     try:
-        patient = Patient.objects.get(PatientName = patientName )
+        patients = Patient.objects.get(PatientName = patientName)
+        if not isinstance(patients, list):
+            patients = [patients,]
+        patient = None
+        for patient_query in patients:
+            if patient_query.fk_hospital_id == profile.institution:
+                patient = patient_query
+                break
+        
+        if patient == None:
+            patient = make_patient(dicom_dataframe, patientName, profile)
     except ObjectDoesNotExist:
         print("creating new patient")
-        patient = Patient()
-        patient.PatientName = str(patientName)
-        patient.BirthDate = datetime.datetime.strptime(dicom_dataframe.PatientBirthDate, "%Y%m%d").date() if ("PatientBirthDate" in dicom_dataframe) and dicom_dataframe.PatientBirthDate else None
-        patient.Gender = str(dicom_dataframe.PatientSex) if "PatientSex" in dicom_dataframe else None
-        patient.EnthicGroup = str(dicom_dataframe.EthnicGroup) if "EthnicGroup" in dicom_dataframe else None
-        patient.fk_user_id = user
-        patient.save()
+        patient = make_patient(dicom_dataframe, patientName, profile)
+        
     try:
         study = Study.objects.get(StudyInstanceUID = dicom_dataframe.StudyInstanceUID)
     except ObjectDoesNotExist:
@@ -41,7 +59,6 @@ def parse(dicom_dataframe,user_id,patientName):
         study.StudyDescription = str(dicom_dataframe.StudyDescription) if "StudyDescription" in dicom_dataframe else None
         study.TotalSeries = 0
         study.fk_patient_id = patient
-        study.fk_user_id = user
         #study.TotalSeries += 1
         study.save()
 
@@ -60,7 +77,6 @@ def parse(dicom_dataframe,user_id,patientName):
         series.Manufacturer = str(dicom_dataframe.Manufacturer) if "Manufacturer" in dicom_dataframe else None
         series.fk_study_id = study
         series.fk_patient_id = patient
-        series.fk_user_id = user
         series.save()
 
     res = type_dict[dicom_dataframe.Modality].parse(dicom_dataframe,user,patient,study,series)

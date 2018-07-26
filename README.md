@@ -53,6 +53,10 @@ $ create database dsrt;
 $ python3 manage.py makemigrations upload
 $ python3 manage.py makemigrations UserProfile
 $ python3 manage.py migrate
+5) Create the admin (first account). Typically this will be with username `admin` and password `radiation`. 
+Use `example@example.com` if prompted for an email.
+```
+$ python3 manage.py createsuperuser
 ```
 5) Run
 ```
@@ -69,8 +73,12 @@ To see changes to css / js reload webpage with `CTRL + F5` (Chrome)
 CSS is from the `stylesheet` declared at the top of the html file
 
 
-### Sample Log In for Reference (Deployed) instance
+### Accessing admin page
+Go to the following page
+```
+[ip]:8000/admin/
+```
 
-If you would like to log in, the sample user's info is as follows:
-Username: user
-Password: ipilabusc
+and log in with `admin`, `radiation` as above. This can be used to:
+* Add or change user information
+* Add or change hospital information

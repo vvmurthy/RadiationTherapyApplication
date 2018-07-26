@@ -22,7 +22,6 @@ def parse(dataframe,user,patient,study,series):
         dose.DoseUnits = dataframe.DoseUnits
         dose.ReferencedRTPlanSequence = dataframe.ReferencedRTPlanSequence
         dose.ReferencedStructureSetSequence = dataframe.ReferencedStructureSetSequence
-        dose.fk_user_id = user
         dose.fk_patient_id = patient
         dose.fk_study_id = study
         dose.fk_series_id = series
@@ -40,7 +39,6 @@ def parse(dataframe,user,patient,study,series):
         doseImage.PixelSpacing = dataframe.PixelSpacing
         doseImage.NumberOfFrames = int(dataframe.NumberOfFrames)
         doseImage.ImageData = dataframe.pixel_array
-        doseImage.fk_user_id = user
         doseImage.fk_patient_id = patient
         doseImage.fk_study_id = study
         doseImage.fk_series_id = series
@@ -66,7 +64,6 @@ def parse(dataframe,user,patient,study,series):
             dvh.DVHVolumeUnits = item.DVHVolumeUnits
             dvh.DoseUnits = item.DoseUnits
             dvh.DVHData = item.DVHData
-            dvh.fk_user_id = user
             dvh.fk_patient_id = patient
             dvh.fk_study_id = study
             dvh.fk_series_id = series

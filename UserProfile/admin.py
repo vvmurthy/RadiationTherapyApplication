@@ -5,10 +5,9 @@ import sys
 print(sys.path)
 
 from django.contrib import admin
-try:
-	from models import UserProfile
-except:
-	from .models import UserProfile # Python 3 compatibility
+from .models import * 
+
 # Register your models here.
 admin.site.register(UserProfile)
+admin.site.register(Hospital)
 

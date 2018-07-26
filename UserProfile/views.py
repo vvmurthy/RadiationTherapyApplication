@@ -3,13 +3,26 @@ from __future__ import unicode_literals
 
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
+from .forms import ProfileForm
+from .models import UserProfile
+
 # Create your views here.
 
-def index(request):
-	return render(request, 'users/options.html')
+@login_required
+def options(request):
+	profile = UserProfile.objects.get(user=request.user)
+	if request.method == 'POST':
+		form = ProfileForm(request.POST, instance=profile)
+		if form.is_valid():
+			form.save(request.user)
+	else:
+		form = ProfileForm(None, initial=profile, instance=profile)
+
+	return render(request, 'users/options.html', {'form':form})
 
 #def login(request):
 #	return render(request, 'users/login/login.html')

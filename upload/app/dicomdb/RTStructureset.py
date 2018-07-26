@@ -21,7 +21,6 @@ def parse(dicom_dataframe,user,patient,study,series):
         structure_set.fk_series_id = series
         structure_set.fk_study_id = study
         structure_set.fk_patient_id = patient
-        structure_set.fk_user_id = user
         structure_set_id = structure_set.save()
 
 
@@ -48,7 +47,6 @@ def parse(dicom_dataframe,user,patient,study,series):
                 rt_roi.fk_series_id = series
                 rt_roi.fk_study_id = study
                 rt_roi.fk_patient_id = patient
-                rt_roi.fk_user_id = user
                 rt_roi.save()
                 # loop the contour
                 for contour in contour_sequence:
