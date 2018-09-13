@@ -15,6 +15,8 @@ Instructions are currently written only for an ubuntu setup
 
 0) in the terminal, install Python packages Django, Celery and database system MySQL:
 ```
+$ sudo apt-get install libmysqlclient-dev
+$ sudo pip3 install mysqlclient
 $ sudo pip3 install django==1.11.6
 $ sudo pip3 install celery==4.1.0
 $ sudo pip3 install redis
