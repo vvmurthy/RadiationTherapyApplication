@@ -3,15 +3,22 @@
 Source code for the creation of the Radiation Therapy (RT) website, which is the user interface
 to the RT dose, CT image and RT Decision support functionality.
 
+*NOTE:* This README overrides the directions in the dropbox folder regarding setup- it is most
+up-to-date regarding setup of the website.
+
 ### Developed Functionality
 * Display a home page with proper CSS formatting
 * Create new users with a username and password
 * Log in and log out existing users
 * Filler content for an "About" Page and an "FAQ" page
 
-#### How to develop
+#### How to Develop and Run on Your Local Computer
 
-Instructions are currently written only for an ubuntu setup
+Typically, for developing website functionality, you will be writing and deploying the website on
+your local machine to see changes. 
+
+Instructions are currently written only for an ubuntu setup. However, they should work on the 
+VM in the `RadiationTherapyDecisionSupport` repo. 
 
 0) in the terminal, install Python packages Django, Celery and database system MySQL:
 ```
@@ -38,6 +45,19 @@ at the end of the file
 $ mysql
 $ create database dsrt;
 ```
+
+3.5)
+type `$ sudo nano /etc/mysql/my.cnf/` in the terminal, and edit the `my.cnf` file to say
+
+```
+[client]
+user=root
+password={PASSWORD}
+database=dsrt
+```
+
+at the end of the file. Note everything but the last line you should have added already to the file.
+
 4) Create tables in the database using django
 ```
 $ python3 manage.py makemigrations upload
@@ -49,6 +69,7 @@ Use `example@example.com` if prompted for an email.
 ```
 $ python3 manage.py createsuperuser
 ```
+
 
 5) Run
 ```
