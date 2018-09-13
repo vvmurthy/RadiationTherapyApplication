@@ -23,12 +23,14 @@ $ sudo apt-get install mysql-server
 ```
 1) Create a file `ip.txt` with 1 line, containing your ip address of the computer
 you wish to test on. 
-2) Set up mysql, with a root account with a password, default port. Set up `/etc/mysql/my.cnf/` with
+2) Set up mysql, with a root account with a password. **Do not use a default / blank password**. Also set MySQL to use the default port. type `$ sudo nano /etc/mysql/my.cnf` on the command line and set up `/etc/mysql/my.cnf/` with
 ```
 [client]
 user=root
 password={PASSWORD}
 ``` 
+at the end of the file
+
 3) Create the database in the terminal
 ```
 $ mysql
