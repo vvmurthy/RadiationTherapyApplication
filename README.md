@@ -31,7 +31,13 @@ $ sudo apt-get install redis-server
 $ sudo apt-get install mysql-server
 ```
 1) Create a file `ip.txt` with 1 line, containing your ip address of the computer
-you wish to test on. 
+you wish to test on. This should usually be `localhost` unless you are using a remote server. So the contents
+of the file would look like:
+```
+localhost
+```
+usually
+
 2) Set up mysql, with a root account with a password. **Do not use a default / blank password**. Also set MySQL to use the default port. type `$ sudo nano /etc/mysql/my.cnf` on the command line and set up `/etc/mysql/my.cnf/` with
 ```
 [client]
