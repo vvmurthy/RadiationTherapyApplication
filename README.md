@@ -69,6 +69,8 @@ at the end of the file. Note everything but the last line you should have added 
 $ python3 manage.py makemigrations upload
 $ python3 manage.py makemigrations UserProfile
 $ python3 manage.py migrate
+```
+If you are prompted for `[y/N]` for renaming different tables (e.g. `did you rename RtIsDose to RTIsodose`?) press enter. If you are prompted by `you are trying to add a non-nullable field` enter `1`, and then `1` at the prompt.  
 
 5) Create the admin (first account). Typically this will be with username `admin` and password `radiation`. 
 Use `example@example.com` if prompted for an email.
