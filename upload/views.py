@@ -22,11 +22,11 @@ import dicomdb
 from .tasks import uploader_task
 from .models import Patient
 
-@login_required
+@login_required(login_url='/users/login/')
 def view_patient(request, slug):
     return HttpResponse("something")
 
-@login_required
+@login_required(login_url='/users/login/')
 def view_patients(request):
     hospital = "All Hospitals"
     if not request.user.is_superuser:
@@ -56,7 +56,7 @@ def processUploadedFile(raw_file_path, patientName, user_id):
     #r = uploader_task(rootDir, user_id, patientName)
     return r
 
-@login_required
+@login_required(login_url='/users/login/')
 def uploadForm(request):
     # Get the user upload the files
     # user = request.POST['user']

@@ -12,7 +12,7 @@ from .models import UserProfile
 
 # Create your views here.
 
-@login_required
+@login_required(login_url='/users/login/')
 def options(request):
 	profile = UserProfile.objects.get(user=request.user)
 	if request.method == 'POST':
@@ -25,7 +25,7 @@ def options(request):
 	return render(request, 'users/options.html', {'form':form})
 
 #def login(request):
-#	return render(request, 'users/login/login.html')
+#	return render(request, 'users/login.html')
 
 def signup(request):
 	if request.method == 'POST':
