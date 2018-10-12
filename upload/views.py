@@ -49,7 +49,7 @@ def make_ct_image():
     base = base64.b64encode(img.getvalue())
     return base 
 
-@login_required
+@login_required(login_url='/users/login/')
 def view_patient(request, slug):
     patient = Patient.objects.get(id=slug)
     rootDir = os.path.join(PatientDirBase, patient.PatientName)
@@ -70,7 +70,7 @@ def scroll_cts(request):
         return HttpResponse(json.dumps({'imgsrc':base}, 'application/json'))
 
 
-@login_required
+@login_required(login_url='/users/login/')
 def view_patients(request):
     hospital = "All Hospitals"
     if not request.user.is_superuser:
@@ -98,7 +98,7 @@ def processUploadedFile(raw_file_path, patientName, user_id):
     
     return r
 
-@login_required
+@login_required(login_url='/users/login/')
 def uploadForm(request):
     # Get the user upload the files
     # user = request.POST['user']
