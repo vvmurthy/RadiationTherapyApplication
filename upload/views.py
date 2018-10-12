@@ -19,12 +19,56 @@ import dicom
 sys.path.append(BASE_DIR + '/upload/app/')
 import glob
 import dicomdb
+from dicomdb.utils import getImageBlock
+#import app.dicomdb.utils.getImageBlock as getImageBlock
 from .tasks import uploader_task
 from .models import Patient
+import matplotlib
+matplotlib.use('SVG')
+import matplotlib.pyplot as plt
+import numpy as np
+from io import BytesIO
+import base64
+import json
+
+PatientDirBase = os.path.join(STATIC_ROOT, 'data') 
+ct_images = None
+current_ct = 0
+
+def make_ct_image():
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+    fig.subplots_adjust(wspace=0, hspace=0)
+    global ct_images
+    global current_ct
+    ax.imshow(ct_images[:, :, current_ct], cmap='gray')
+    ax.axis('off')
+    plt.tight_layout()
+    img = BytesIO()
+    fig.savefig(img, format="png", bbox_inches='tight', pad_inches=0, transparent=True)
+    base = base64.b64encode(img.getvalue())
+    return base 
 
 @login_required
 def view_patient(request, slug):
-    return HttpResponse("something")
+    patient = Patient.objects.get(id=slug)
+    rootDir = os.path.join(PatientDirBase, patient.PatientName)
+    cts, _ = getImageBlock(rootDir)
+    global ct_images
+    global current_ct
+    ct_images = cts
+    current_ct = 0
+    base = make_ct_image()
+    return render(request, "uploader/patient.html", {"image":base, "patient":patient.PatientName})
+
+@login_required
+def scroll_cts(request):
+    if ct_images is not None:
+        current_ct += 1
+        base = make_ct_image()
+        base = "data:image/png;base64," + base
+        return HttpResponse(json.dumps({'imgsrc':base}, 'application/json'))
+
 
 @login_required
 def view_patients(request):
@@ -49,11 +93,9 @@ def processUploadedFile(raw_file_path, patientName, user_id):
             os.makedirs(directory_extract_to)
         zipObject.extractall(directory_extract_to)
     # Process the dicom files to give the output
-
-    rootDir = os.path.join(STATIC_ROOT, 'data', str(user_id),
-                           patientName)  # set the directory you want to start from
-    r = uploader_task.delay(rootDir, user_id, patientName)
-    #r = uploader_task(rootDir, user_id, patientName)
+    r = uploader_task.delay(directory_extract_to, user_id, patientName)
+    
+    
     return r
 
 @login_required

@@ -84,8 +84,8 @@ class RTROI(models.Model):
     class Meta:
         db_table = 'rt_rois'
 
-
-    ROIName = models.CharField(max_length=100)
+    ROIName = models.ForeignKey(ROI)
+    #ROIName = models.CharField(max_length=100)
     Volume = models.FloatField()
     TotalContours = models.IntegerField()
     ROINumber = models.CharField(max_length=200,null=True)

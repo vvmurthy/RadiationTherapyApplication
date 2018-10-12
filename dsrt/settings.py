@@ -38,7 +38,7 @@ if os.path.exists(BASE_DIR + "/ip.txt"):
         ALLOWED_HOSTS = f.readlines()
         ALLOWED_HOSTS = [x.strip() for x in ALLOWED_HOSTS]
 else:
-    ALLOWED_HOSTS = ['68.181.174.158', 'egg120-9.usc.edu']
+    ALLOWED_HOSTS = ['68.181.174.158', '127.0.0.1', 'egg120-9.usc.edu', 'localhost']
 
 
 # Application definition

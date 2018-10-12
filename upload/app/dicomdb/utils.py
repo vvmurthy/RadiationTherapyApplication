@@ -23,7 +23,7 @@ def getIsodose(dataframe,user,patient):
     return isodoseDict
 
 
-def getImageBlock(patientID,DataPath):
+def getImageBlock(DataPath):
 
     DATA_PATH = DataPath
     #####################
@@ -40,6 +40,7 @@ def getImageBlock(patientID,DataPath):
             print("No images")
             return None
     layer = 0
+
     # the larger number of slicelocation is at the top, so reverse the order
     # The head is the largest value of slicelocation
     # images = OrderedDict(sorted(images.items(),reverse=True))

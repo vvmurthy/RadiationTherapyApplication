@@ -70,6 +70,13 @@ $ python3 manage.py makemigrations upload
 $ python3 manage.py makemigrations UserProfile
 $ python3 manage.py migrate
 
+4.5) Download the RadiationTherapyDecisionSupport repo, and symbolically link the folder to the correct location in RadiationTherapyApplication, under `RadiationTherapyApplication/AlgoEngine/app/AlgoEngine`
+
+In ubuntu, this can be done using 
+```
+$ ln -s /path/to/RadiationTherapyDecisionSupport/ /path/to/RadiationTherapyApplication/AlgoEngine/app/AlgoEngine/
+```
+
 5) Create the admin (first account). Typically this will be with username `admin` and password `radiation`. 
 Use `example@example.com` if prompted for an email.
 ```
