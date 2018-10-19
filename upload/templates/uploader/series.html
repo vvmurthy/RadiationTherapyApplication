@@ -1,0 +1,23 @@
+{% extends "dsrt/base.html" %}
+{% block content %}
+    <h4>All CT Series from patient: {{patient}}, study date {{study_date}} </h4>
+
+    <table>
+        <tr>
+            <th>Series Date</th>
+            <th>Series Description</th>
+        </tr>
+    
+        {% for element in series %}
+        <tr>
+            <td>
+                <a href="/upload/patients/data/{{patient_id}}/{{study_id}}/{{element.id}}">
+                    <div>{{element.SeriesDate}}</div>
+                </a>
+            </td>
+            <td>{{element.SeriesDescription}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+{% endblock %}

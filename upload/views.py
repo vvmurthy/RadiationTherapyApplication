@@ -5,7 +5,7 @@ from django.shortcuts import render
 import os
 import shutil
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import MySQLdb as db
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -20,9 +20,8 @@ sys.path.append(BASE_DIR + '/upload/app/')
 import glob
 import dicomdb
 from dicomdb.utils import getImageBlock
-#import app.dicomdb.utils.getImageBlock as getImageBlock
 from .tasks import uploader_task
-from .models import Patient
+from .models import Patient, Study, Series
 import matplotlib
 matplotlib.use('SVG')
 import matplotlib.pyplot as plt
@@ -32,16 +31,13 @@ import base64
 import json
 
 PatientDirBase = os.path.join(STATIC_ROOT, 'data') 
-ct_images = None
-current_ct = 0
+ct_images = {}
 
-def make_ct_image():
+def make_ct_image(current_ct, ct_block):
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
     fig.subplots_adjust(wspace=0, hspace=0)
-    global ct_images
-    global current_ct
-    ax.imshow(ct_images[:, :, current_ct], cmap='gray')
+    ax.imshow(ct_block[:, :, current_ct], cmap='gray')
     ax.axis('off')
     plt.tight_layout()
     img = BytesIO()
@@ -50,25 +46,85 @@ def make_ct_image():
     return base 
 
 @login_required(login_url='/users/login/')
-def view_patient(request, slug):
+def view_studies(request, slug):
+    """
+    API call to view the patient's studies
+
+    slug : str
+        The patient ID of the patient whose dashboard to query
+    """
     patient = Patient.objects.get(id=slug)
-    rootDir = os.path.join(PatientDirBase, patient.PatientName)
-    cts, _ = getImageBlock(rootDir)
-    global ct_images
-    global current_ct
-    ct_images = cts
-    current_ct = 0
-    base = make_ct_image()
-    return render(request, "uploader/patient.html", {"image":base, "patient":patient.PatientName})
+    studies = Study.objects.filter(fk_patient_id=slug)
+    return render(request, "uploader/studies.html", {"studies":studies, 
+        "patient":patient.PatientName, "patient_id":slug})
 
-@login_required
+@login_required(login_url='/users/login/')
+def view_series(request, slug, study_id):
+    """
+    API call to view the patient's CT series
+
+    slug : str
+        The patient ID of the patient whose dashboard to query
+    study_id : str
+        Patient study id to view
+    """
+    patient = Patient.objects.get(id=slug)
+    studies = Study.objects.get(fk_patient_id=slug, id=study_id)
+    series = Series.objects.filter(fk_patient_id=slug, fk_study_id=study_id, Modality="CT")
+    return render(request, "uploader/series.html", {"series":series, 
+        "patient":patient.PatientName, "patient_id":slug, "study_id":study_id})
+
+@login_required(login_url='/users/login/')
+def view_cts(request, slug, study_id, series_id):
+    """
+    API call to view the patient details
+
+    slug : str
+        The patient ID of the patient whose dashboard to query
+    study : str
+        The study ID for the patient to query the dashboard
+    series : str
+        The series ID for the patient to query in the dashboard
+    """
+    patient = Patient.objects.get(id=slug)
+    rootDir = os.path.join(PatientDirBase, slug, patient.PatientName)
+    try:
+        cts, _ = getImageBlock(rootDir, slug, study_id, series_id)
+        ct_images[int(slug)] = cts
+        current_ct = 0
+        base = make_ct_image(current_ct, cts)
+        return render(request, "uploader/patient.html", {"image":base, 
+            "patient":patient.PatientName, "id":slug, "ct_index":current_ct})
+    except AssertionError:
+        return HttpResponse(500)
+
+@login_required(login_url='/users/login/')
 def scroll_cts(request):
-    if ct_images is not None:
-        current_ct += 1
-        base = make_ct_image()
-        base = "data:image/png;base64," + base
-        return HttpResponse(json.dumps({'imgsrc':base}, 'application/json'))
+    ct_index = request.GET.get("ct_index")
+    delta = int(request.GET.get("delta"))
+    id = int(request.GET.get("id"))
+    ct_block = ct_images[id]
 
+    if ct_block is not None:
+        current_ct = int(ct_index) + delta
+        if(current_ct == -1):
+            current_ct = ct_block.shape[2] - 1
+        elif(current_ct == ct_block.shape[2]):
+            current_ct = 0
+        
+        base = make_ct_image(current_ct, ct_block)
+        json_data = {}
+        json_data["imgsrc"] = base.decode('utf-8')
+        json_data["index"] = current_ct
+        return JsonResponse(json_data)
+    else:
+        return HttpResponse(500)
+
+@login_required(login_url='/users/login/')
+def remove_ct(request):
+    id = request.GET.get("id")
+    del ct_images[int(id)] 
+    return HttpResponse(200) 
 
 @login_required(login_url='/users/login/')
 def view_patients(request):

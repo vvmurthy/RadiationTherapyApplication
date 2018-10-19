@@ -1,0 +1,23 @@
+{% extends "dsrt/base.html" %}
+{% block content %}
+    <h4>All Studies from patient: {{patient}} </h4>
+
+    <table>
+        <tr>
+            <th>Study Date</th>
+            <th>Study Description</th>
+        </tr>
+    
+        {% for element in studies %}
+        <tr>
+            <td>
+                <a href="/upload/patients/data/{{patient_id}}/{{element.id}}">
+                    <div>{{element.StudyDate}}</div>
+                </a>
+            </td>
+            <td>{{element.StudyDescription}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+{% endblock %}

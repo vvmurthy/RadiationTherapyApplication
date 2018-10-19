@@ -1,0 +1,47 @@
+{% extends "dsrt/base.html" %}
+{% block content %}
+
+    <script>
+        var index = parseInt("{{ct_index}}")
+        function scrollCT(delta){
+            var id = "{{id}}"
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/upload/patients/data/cts/?id=" + id + "&ct_index="+ index.toString()+ "&delta=" + delta.toString(), 
+                true);
+            xhr.onreadystatechange = function(){
+                
+                if(xhr.readyState == 4){
+                    JSON.parse(this.response, (key, value) => {
+                        if(key.toString() === "imgsrc"){
+                            document.getElementById('ct').src = "data:image/png;base64," + value;
+                        }else if(key.toString() === "index"){
+                            index = parseInt(value);
+                        }
+                        
+                    });
+                }       
+            } 
+            xhr.send();
+        }
+    </script>
+
+    <script>
+        // When user navigates off page, kill cached version
+        // of images in dict
+        window.onbeforeunload = function(){
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/upload/patients/data/remove_ct/?id=" + "{{id}}", 
+                true);
+            xhr.send();
+        }
+    </script>
+
+    <h4>Data for patient: {{patient}} </h4>
+    <img id="ct" src="data:image/png;base64,{{image}}"/>
+    <button class="btn" onclick="scrollCT(1);">
+            &raquo; Next CT
+    </button>
+    <button class="btn" onclick="scrollCT(-1);">
+            &laquo; Previous CT
+    </button>
+{% endblock %}
