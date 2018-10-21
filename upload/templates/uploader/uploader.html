@@ -1,26 +1,54 @@
 {% extends "dsrt/base.html" %}
 {% block title %}Upload Files{% endblock %}
 {% block content %}
+<style>
 
+header{
+
+	text-indent:750px;
+	font-size:20px;
+	color:Black;
+}
+
+h1{
+	margin-top:100px;
+	text-align:center;
+
+}
+
+#info{
+
+	margin-top:100px;
+	color:Black;
+	margin-left:250px;
+
+}
+#button{
+
+	margin-left:160px;
+}
+
+
+
+</style>
     <div class="container" >
     <div class="panel panel-default">
     <div class="panel-body">
-        <div align="right">
-            <h4>Clinical ID : <b>{{hospital}}</b></h4>
+        <div>
+            <header>Clinical ID:<b>{{hospital}}<p></header>
         </div>
-    <h4>Upload new case to be analysed</h4>
+    <h1>New Case to be Analysed</h1>
         <!-- The start of the form -->
-       <form class="form-inline" id="uploadDataset" action="" method="post" enctype="multipart/form-data">
+       <form id="info" id="uploadDataset" action="" method="post" enctype="multipart/form-data">
+	
            {% csrf_token %}
            <div class="form-group">
-               <input type="text" class="form-row" name="patientName">
+		CT Scan Upload: <input type="text"name="patientName" placeholder="Patient Name">
+		<input type="file" id="myFile">
+		
            </div>
-           <div class="form-group">
-              <input type="file" class="form-control input-lg" name="dcmZipFile">
-           </div>
-           <div class="form-group">
-               <button type="submit" class="btn btn-primary btn-lg">Submit</button>
-           </div>
+	    <button id="button" type="submit" class="btn btn-primary btn-md">Upload</button>
       </form>
-    <hr>
+	
+    
 {% endblock %}
