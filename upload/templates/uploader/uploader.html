@@ -44,7 +44,7 @@ h1{
            {% csrf_token %}
            <div class="form-group">
 		CT Scan Upload: <input type="text"name="patientName" placeholder="Patient Name">
-		<input type="file" id="myFile">
+		<input type="file" id="dcmZipFile" name="dcmZipFile">
 		
            </div>
 	    <button id="button" type="submit" class="btn btn-primary btn-md">Upload</button>
