@@ -148,7 +148,6 @@ def find_similar(request):
     return HttpResponse()
 
 
-
 # Create your views here.
 # Process the uploaded dicom files
 # Store the information into the database
@@ -162,8 +161,6 @@ def processUploadedFile(raw_file_path, patientName, user_id):
         zipObject.extractall(directory_extract_to)
     # Process the dicom files to give the output
     r = uploader_task.delay(directory_extract_to, user_id, patientName)
-    
-    
     return r
 
 @login_required(login_url='/users/login/')
