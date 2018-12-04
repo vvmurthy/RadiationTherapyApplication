@@ -132,10 +132,22 @@ def view_patients(request):
     if not request.user.is_superuser:
         profile = UserProfile.objects.get(user=request.user)
         patients = Patient.objects.filter(fk_hospital_id=profile.institution)
-        hospital = profile.institution.name
+        if profile.institution is not None:
+            hospital = profile.institution.name
+        else:
+            hospital = "No hospital selected"
     else:
         patients = Patient.objects.all()
     return render(request, "uploader/patients.html", {'patients':patients, 'hospital':hospital})
+
+@login_required(login_url="/users/login/")
+def find_similar(request):
+    
+    # Get all patient similarities in similarities table
+    # send them to frontend
+    return HttpResponse()
+
+
 
 # Create your views here.
 # Process the uploaded dicom files
