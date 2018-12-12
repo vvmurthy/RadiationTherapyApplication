@@ -12,6 +12,10 @@ from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib.auth.models import User
 from UserProfile.models import UserProfile
+
+
+import logging
+
 type_dict = {
     'RTSTRUCT': RTStructureset,
     'RTDOSE': RTDose,
@@ -31,6 +35,8 @@ def make_patient(dicom_dataframe, patientName, profile):
 
 def parse(dicom_dataframe,user_id,patientName):
     #do the first three step and call different method to do the different thing
+    logging.info("Starting parsing now")
+
     user = User.objects.get(pk=user_id)
     profile = UserProfile.objects.get(user=user)
     try:
@@ -48,7 +54,8 @@ def parse(dicom_dataframe,user_id,patientName):
     except ObjectDoesNotExist:
         print("creating new patient")
         patient = make_patient(dicom_dataframe, patientName, profile)
-        
+
+    logging.info("Parsing Study") 
     try:
         study = Study.objects.get(StudyInstanceUID = dicom_dataframe.StudyInstanceUID)
     except ObjectDoesNotExist:
@@ -62,6 +69,7 @@ def parse(dicom_dataframe,user_id,patientName):
         #study.TotalSeries += 1
         study.save()
 
+    logging.info("Parsing Series")
     try:
         series = Series.objects.get(SeriesInstanceUID = dicom_dataframe.SeriesInstanceUID)
     except ObjectDoesNotExist:
@@ -79,5 +87,10 @@ def parse(dicom_dataframe,user_id,patientName):
         series.fk_patient_id = patient
         series.save()
 
-    res = type_dict[dicom_dataframe.Modality].parse(dicom_dataframe,user,patient,study,series)
-    return res
+    print("processing data of modality: " + str(dicom_dataframe.Modality))
+    res = type_dict[dicom_dataframe.Modality].parse(dicom_dataframe, user, patient, study, series)
+    logging.info("Parsing completed. Starting OVH / STS extraction")
+    if res:
+        return study
+    else:
+        return None

@@ -17,7 +17,7 @@ import sys
 sys.path.append(BASE_DIR + '/upload/app/')
 
 import dicomdb
-
+from AlgoEngine.app.AlgoEngine.RadiationTherapyDecisionSupport.Python.AlgoEngine import AlgoManager
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE','dsrt.settings')
 
@@ -34,4 +34,7 @@ def uploader_task(rootDir, user_id, patientName):
             else:
                 print("Something is wrong")
                 return False
+    # Run ovh / sts generation
+    am = AlgoManager(str(res.pk), False)
+    am.feature_extraction()
     return True

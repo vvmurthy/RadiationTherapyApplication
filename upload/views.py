@@ -155,12 +155,12 @@ def processUploadedFile(raw_file_path, patientName, user_id):
     # the input is a zip file
     with zipfile.ZipFile(raw_file_path, 'r') as zipObject:  # create zipfile object
         # unzip the file in a folder named by patientName
-        directory_extract_to = os.path.join(STATIC_ROOT, 'data', str(user_id), patientName)
+        directory_extract_to = os.path.join(STATIC_ROOT, 'data', str(user_id))
         if not os.path.exists(directory_extract_to):
             os.makedirs(directory_extract_to)
         zipObject.extractall(directory_extract_to)
     # Process the dicom files to give the output
-    r = uploader_task.delay(directory_extract_to, user_id, patientName)
+    r = uploader_task(os.path.join(directory_extract_to, raw_file_path.split("/")[-1].split(".zip")[0]), user_id, patientName)
     return r
 
 @login_required(login_url='/users/login/')
@@ -208,6 +208,7 @@ def uploadForm(request):
 
                 # After do all things return a HTML　to front end
         # return HttpResponse("Upload \n {}, {}, {}".format(res.status,res.id,res.get()))
-        return HttpResponse("upload successfully")
+        return render(request, 'uploader/uploader.html', {'hospital':profile.institution, "response_message":
+            "upload successful"})
     else:
         return render(request, 'uploader/uploader.html', {'hospital':profile.institution})

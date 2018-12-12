@@ -203,10 +203,9 @@ class Similarity(models.Model):
     class Meta:
         db_table = 'similarity'
     DBStudyID = models.CharField(max_length=100)
-    Similarity = models.FloatField(max_length=200)
-    OVHDisimilarity = models.FloatField(max_length=200)
-    STSDisimilarity = models.FloatField(max_length=200)
-    TDDisimilarity = models.FloatField(max_length=200)
+    OVH_dissimilarity = models.FloatField(max_length=200)
+    STS_dissimilarity = models.FloatField(max_length=200)
+    TD_dissimilarity = models.FloatField(max_length=200)
     TargetOAR = models.ForeignKey(ROI, related_name="TargetOAR")
     TargetPTV = models.ForeignKey(ROI, related_name="TargetPTV")
     fk_study_id_1 = models.ForeignKey(Study, related_name="fk_study_id_1")
