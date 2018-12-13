@@ -22,13 +22,11 @@ VM in the `RadiationTherapyDecisionSupport` repo.
 
 0) in the terminal, install Python packages Django, Celery and database system MySQL:
 ```
-$ sudo apt-get install libmysqlclient-dev
-$ sudo pip3 install mysqlclient
-$ sudo pip3 install django==1.11.6
-$ sudo pip3 install celery==4.1.0
-$ sudo pip3 install redis
-$ sudo apt-get install redis-server
 $ sudo apt-get install mysql-server
+$ sudo apt-get install redis-server
+$ sudo apt-get install libmysqlclient-dev
+$ sudo pip3 install -r requirements.txt
+
 ```
 1) Create a file `ip.txt` with 1 line, containing your ip address of the computer
 you wish to test on. This should usually be `localhost` unless you are using a remote server. So the contents
