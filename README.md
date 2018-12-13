@@ -26,6 +26,7 @@ $ sudo apt-get install mysql-server
 $ sudo apt-get install redis-server
 sudo apt-get install libgtk-3-dev
 sudo apt-get install libssl-dev
+sudo apt-get install freeglut3-dev
 $ sudo apt-get install libmysqlclient-dev
 $ sudo pip3 install -r requirements.txt
 
