@@ -54,7 +54,8 @@ def parse(dataframe,user,patient,study,series):
         #create a dvh for each ROI
         referencedROI = item.DVHReferencedROISequence[0].ReferencedROINumber
         try:
-            dvh = RTDVH.objects.get(DVHReferencedROI=referencedROI, fk_study_id=study)
+            # TODO, check why sometimes more than one is returned
+            dvh = RTDVH.objects.filter(DVHReferencedROI=referencedROI, fk_study_id=study)
         except ObjectDoesNotExist:
             dvh = RTDVH()
             dvh.DVHDoseScaling = item.DVHDoseScaling
