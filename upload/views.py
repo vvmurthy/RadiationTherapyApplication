@@ -87,7 +87,8 @@ def view_cts(request, slug, study_id, series_id):
         The series ID for the patient to query in the dashboard
     """
     patient = Patient.objects.get(id=slug)
-    rootDir = os.path.join(PatientDirBase, slug, patient.PatientName)
+    rootDir = os.path.join(PatientDirBase, patient.PatientName)
+    import pdb ; pdb.set_trace()
     try:
         cts, _ = getImageBlock(rootDir, slug, study_id, series_id)
         ct_images[int(slug)] = cts
@@ -96,7 +97,7 @@ def view_cts(request, slug, study_id, series_id):
         return render(request, "uploader/patient.html", {"image":base, 
             "patient":patient.PatientName, "id":slug, "ct_index":current_ct})
     except AssertionError:
-        return HttpResponse(500)
+        return HttpResponse(status=500)
 
 @login_required(login_url='/users/login/')
 def scroll_cts(request):
@@ -155,7 +156,7 @@ def processUploadedFile(raw_file_path, patientName, user_id):
     # the input is a zip file
     with zipfile.ZipFile(raw_file_path, 'r') as zipObject:  # create zipfile object
         # unzip the file in a folder named by patientName
-        directory_extract_to = os.path.join(STATIC_ROOT, 'data', str(user_id))
+        directory_extract_to = os.path.join(STATIC_ROOT, 'data')
         if not os.path.exists(directory_extract_to):
             os.makedirs(directory_extract_to)
         zipObject.extractall(directory_extract_to)
@@ -199,7 +200,7 @@ def uploadForm(request):
         # Delete the files in the raw folder
         folder_path = os.path.join(STATIC_ROOT, 'raw')
 
-        for file_object in os.listdir(folder_path):
+        for file_object in sorted(os.listdir(folder_path))[::-1]:
             file_object_path = os.path.join(folder_path, file_object)
             if os.path.isfile(file_object_path):
                 os.unlink(file_object_path)

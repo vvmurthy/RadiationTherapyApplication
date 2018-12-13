@@ -2,11 +2,11 @@ import os
 os.environ["DJANGO_SETTINGS_MODULE"] = './../../../dsrt/settings.py'
 from upload.models import Patient, Study, Series
 try:
-	import CTImage,RPPlan,RTDose,RTStructureset
+	import CTImage,RPPlan,RTDoseset,RTStructureset
 except ImportError:
 	from .CTImage import *
 	from .RPPlan import *
-	from .RTDose import *
+	from .RTDoseset import *
 	from .RTStructureset import *
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
@@ -18,7 +18,7 @@ import logging
 
 type_dict = {
     'RTSTRUCT': RTStructureset,
-    'RTDOSE': RTDose,
+    'RTDOSE': RTDoseset,
     'RTPLAN': RPPlan,
     'CT'    : CTImage
 }

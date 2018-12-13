@@ -24,7 +24,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE','dsrt.settings')
 @task(name="analyse dicom file and store it into data")
 def uploader_task(rootDir, user_id, patientName):
 
-    files = glob.glob(rootDir + '/*.dcm')
+    files = sorted(glob.glob(rootDir + '/*.dcm'), reverse=True)
     for file in files:
         if file:
             df = dicom.read_file(file)
@@ -34,7 +34,9 @@ def uploader_task(rootDir, user_id, patientName):
             else:
                 print("Something is wrong")
                 return False
-    # Run ovh / sts generation
+    
+    # Run ovh / sts generation and similarity
     am = AlgoManager(str(res.pk), False)
-    am.feature_extraction()
+    am.run()
+
     return True

@@ -43,7 +43,11 @@ def parse(dicom_dataframe,user,patient,study,series):
 				roiObject.ROIName = roi_name
 				roiObject.save()
 			roi_id = ROI.objects.get(ROIName=roi_name)
-			rt_roi.ROIName = roi_id
+			rt_roi.roi_id = roi_id
+			try:
+				rt_roi.roi_interpretation = roi.RTROIInterpretedType
+			except:
+				rt_roi.roi_interpretation = "None"
 			rt_roi.ROIDisplayColor = roi.ROIDisplayColor
 			rt_roi.ROINumber = roi.ReferencedROINumber
 			# Make a function to calculate the volume of ROI, given its contour information

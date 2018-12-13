@@ -80,15 +80,16 @@ class ROI(models.Model):
     ROIName = models.CharField(max_length=100,unique=True)
     ROIDisplayColor = models.CharField(max_length=100)
 
+
 class RTROI(models.Model):
     class Meta:
         db_table = 'rt_rois'
 
-    ROIName = models.ForeignKey(ROI)
-    #ROIName = models.CharField(max_length=100)
+    roi_id = models.ForeignKey(ROI)
+    roi_interpretation = models.CharField(max_length=100) # PTV , CTV , etc
     Volume = models.FloatField()
     TotalContours = models.IntegerField()
-    ROINumber = models.CharField(max_length=200,null=True)
+    ROINumber = models.IntegerField()
     fk_structureset_id = models.ForeignKey(RTStructureSet)
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)
@@ -125,8 +126,8 @@ class RTDoseImage(models.Model):
         db_table = 'rt_dose_image'
     Columns = models.IntegerField()
     Rows = models.IntegerField()
-    ImageOrientationPatient = models.CharField(max_length=20)
-    ImagePositionPatient = models.CharField(max_length=20)
+    ImageOrientationPatient = models.CharField(max_length=100)
+    ImagePositionPatient = models.CharField(max_length=100)
     PhotometricInterpretation = models.CharField(max_length=20,null=True)
     PixelSpacing = models.CharField(max_length=20)
     NumberOfFrames = models.IntegerField()
@@ -144,12 +145,14 @@ class RTDVH(models.Model):
     DVHMeanDose = models.FloatField()
     DVHMinimumDose = models.FloatField()
     DVHNumberOfBins = models.IntegerField()
-    DVHReferencedROI = models.CharField(max_length=10)
-    DVHType = models.CharField(max_length=10,null=True)
+    DVHReferencedROI = models.ForeignKey(RTROI)
+    DVHType = models.CharField(max_length=20,null=True)
     DVHVolumeUnits = models.CharField(max_length=10)
     DoseType = models.CharField(max_length=10)
     DoseUnits = models.CharField(max_length=10)
-    DVHData = models.TextField()
+    DVHBins = models.TextField()
+    DVHCounts = models.TextField()
+
     fk_dose_id = models.ForeignKey(RTDose)
     fk_series_id = models.ForeignKey(Series)
     fk_study_id = models.ForeignKey(Study)

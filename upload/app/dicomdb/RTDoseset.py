@@ -4,9 +4,12 @@ try:
 	from utils import *
 except ImportError:
 	from .utils import *
-from upload.models import RTDVH
+from upload.models import RTDVH, RTROI
 from upload.models import RTDose
 from upload.models import RTDoseImage
+
+from dicompylercore import dicomparser, dvhcalc
+from dicompylercore import dvh as dvhlib
 
 
 def parse(dataframe,user,patient,study,series):
@@ -20,8 +23,8 @@ def parse(dataframe,user,patient,study,series):
         dose.DoseSummationType = dataframe.DoseSummationType
         dose.DoseType = dataframe.DoseType
         dose.DoseUnits = dataframe.DoseUnits
-        dose.ReferencedRTPlanSequence = dataframe.ReferencedRTPlanSequence
-        dose.ReferencedStructureSetSequence = dataframe.ReferencedStructureSetSequence
+        dose.ReferencedRTPlanSequence = dataframe.ReferencedRTPlanSequence[0].ReferencedSOPInstanceUID
+        dose.ReferencedStructureSetSequence = dataframe.ReferencedStructureSetSequence[0].ReferencedSOPInstanceUID
         dose.fk_patient_id = patient
         dose.fk_study_id = study
         dose.fk_series_id = series
@@ -33,8 +36,8 @@ def parse(dataframe,user,patient,study,series):
         doseImage = RTDoseImage()
         doseImage.Columns = dataframe.Columns
         doseImage.Rows = dataframe.Rows
-        doseImage.ImageOrientationPatient = dataframe.ImageOrientationPatient
-        doseImage.ImagePositionPatient = dataframe.ImagePositionPatient
+        doseImage.ImageOrientationPatient = str(dataframe.ImageOrientationPatient)
+        doseImage.ImagePositionPatient = str(dataframe.ImagePositionPatient)
         doseImage.PhotometricInterpretation = dataframe.PhotometricInterpretation
         doseImage.PixelSpacing = dataframe.PixelSpacing
         doseImage.NumberOfFrames = int(dataframe.NumberOfFrames)
@@ -51,7 +54,7 @@ def parse(dataframe,user,patient,study,series):
         #create a dvh for each ROI
         referencedROI = item.DVHReferencedROISequence[0].ReferencedROINumber
         try:
-            dvh = RTDVH.objects.get(DVHReferencedROI=referencedROI)
+            dvh = RTDVH.objects.get(DVHReferencedROI=referencedROI, fk_study_id=study)
         except ObjectDoesNotExist:
             dvh = RTDVH()
             dvh.DVHDoseScaling = item.DVHDoseScaling
@@ -59,15 +62,24 @@ def parse(dataframe,user,patient,study,series):
             dvh.DVHMeanDose = item.DVHMeanDose
             dvh.DVHMinimumDose = item.DVHMinimumDose
             dvh.DVHNumberOfBins = item.DVHNumberOfBins
-            dvh.DVHReferencedROI = referencedROI
+            dvh.DVHReferencedROI = RTROI.objects.get(ROINumber=referencedROI, 
+                    fk_patient_id=patient, fk_study_id=study)
             dvh.DVHType = item.DVHType
             dvh.DVHVolumeUnits = item.DVHVolumeUnits
             dvh.DoseUnits = item.DoseUnits
-            dvh.DVHData = item.DVHData
+
+            # Generate the dvh using dicompyler
+            create_dvh = dvhlib.DVH.from_dicom_dvh(dataframe, referencedROI)
+            create_dvh = create_dvh.cumulative
+            dvh.DVHCounts = str(create_dvh.counts.tostring())
+            dvh.DVHBins = str(create_dvh.bins.tostring())
+
             dvh.fk_patient_id = patient
             dvh.fk_study_id = study
             dvh.fk_series_id = series
             dvh.fk_dose_id = dose
             dvh.save()
 
-    IsdoseSequence = getIsodose(dataframe)
+    # TODO: link in isodose curves
+    #IsdoseSequence = getIsodose(dataframe)
+    return True

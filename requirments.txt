@@ -28,3 +28,4 @@ Twisted-Core==13.2.0
 urllib3==1.7.1
 vine==1.1.4
 zope.interface==4.0.5
+dicompyler
