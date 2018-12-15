@@ -36,12 +36,29 @@
         }
     </script>
 
+    
+
     <h4>Data for patient: {{patient}} </h4>
-    <img id="ct" src="data:image/png;base64,{{image}}"/>
-    <button class="btn" onclick="scrollCT(1);">
-            &raquo; Next CT
-    </button>
-    <button class="btn" onclick="scrollCT(-1);">
-            &laquo; Previous CT
-    </button>
+
+    <ul class="nav nav-tabs">
+        {% for roi in rois %}
+            <li class="nav-item">
+                <a class="nav-link" href="#{{roi.name}}">{{roi.name}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div id="sidebar" style="max-width:33%;">
+        <div id="image">
+            <img id="ct" src="data:image/png;base64,{{image}}"/>
+        </div>
+        
+        <button class="btn" onclick="scrollCT(1);">
+                &raquo; Next CT
+        </button>
+        <button class="btn" onclick="scrollCT(-1);">
+                &laquo; Previous CT
+        </button>
+    </nav>
+    
 {% endblock %}

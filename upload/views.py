@@ -16,12 +16,13 @@ import zipfile
 import sys
 import dicom
 
+
 sys.path.append(BASE_DIR + '/upload/app/')
 import glob
 import dicomdb
 from dicomdb.utils import getImageBlock
 from .tasks import uploader_task
-from .models import Patient, Study, Series
+from .models import *
 import matplotlib
 matplotlib.use('SVG')
 import matplotlib.pyplot as plt
@@ -88,14 +89,27 @@ def view_cts(request, slug, study_id, series_id):
     """
     patient = Patient.objects.get(id=slug)
     rootDir = os.path.join(PatientDirBase, patient.PatientName)
-    import pdb ; pdb.set_trace()
     try:
         cts, _ = getImageBlock(rootDir, slug, study_id, series_id)
         ct_images[int(slug)] = cts
         current_ct = 0
         base = make_ct_image(current_ct, cts)
+
+        # Get the DVH pane names as well
+        rois = []
+        study = Study.objects.get(id=study_id)
+        rt_rois = RTDVH.objects.filter(fk_study_id=study, fk_patient_id=patient)
+        for roi_raw in rt_rois:
+            roi = roi_raw.DVHReferencedROI
+            roi_info = {}
+            roi_original = roi.roi_id
+            roi_info["name"] = roi_original.ROIName
+            roi_info["rt_roi_id"] = roi.id
+            rois.append(roi_info)
+
         return render(request, "uploader/patient.html", {"image":base, 
-            "patient":patient.PatientName, "id":slug, "ct_index":current_ct})
+            "patient":patient.PatientName, "id":slug, "ct_index":current_ct,
+            "rois":rois})
     except AssertionError:
         return HttpResponse(status=500)
 
