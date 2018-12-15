@@ -50,11 +50,14 @@ def parse(dataframe,user,patient,study,series):
 
     #DVH information is under this tag
     dvhSequence = dataframe.DVHSequence
-    for item in dvhSequence:
+    for i, item in enumerate(dvhSequence):
         #create a dvh for each ROI
         referencedROI = item.DVHReferencedROISequence[0].ReferencedROINumber
+        ref_roi = RTROI.objects.get(ROINumber=referencedROI, 
+                    fk_patient_id=patient, fk_study_id=study)
         try:
-            dvh = RTDVH.objects.get(DVHReferencedROI=referencedROI, fk_study_id=study)
+            
+            dvh = RTDVH.objects.get(DVHReferencedROI=ref_roi, fk_study_id=study)
         except ObjectDoesNotExist:
             dvh = RTDVH()
             dvh.DVHDoseScaling = item.DVHDoseScaling
@@ -62,8 +65,7 @@ def parse(dataframe,user,patient,study,series):
             dvh.DVHMeanDose = item.DVHMeanDose
             dvh.DVHMinimumDose = item.DVHMinimumDose
             dvh.DVHNumberOfBins = item.DVHNumberOfBins
-            dvh.DVHReferencedROI = RTROI.objects.get(ROINumber=referencedROI, 
-                    fk_patient_id=patient, fk_study_id=study)
+            dvh.DVHReferencedROI = ref_roi
             dvh.DVHType = item.DVHType
             dvh.DVHVolumeUnits = item.DVHVolumeUnits
             dvh.DoseUnits = item.DoseUnits
