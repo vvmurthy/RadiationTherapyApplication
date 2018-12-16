@@ -32,19 +32,7 @@ import base64
 import json
 
 PatientDirBase = os.path.join(STATIC_ROOT, 'data') 
-ct_images = {}
 
-def make_ct_image(current_ct, ct_block):
-    fig = plt.figure()
-    ax = fig.add_subplot(1,1,1)
-    fig.subplots_adjust(wspace=0, hspace=0)
-    ax.imshow(ct_block[:, :, current_ct], cmap='gray')
-    ax.axis('off')
-    plt.tight_layout()
-    img = BytesIO()
-    fig.savefig(img, format="png", bbox_inches='tight', pad_inches=0, transparent=True)
-    base = base64.b64encode(img.getvalue())
-    return base 
 
 @login_required(login_url='/users/login/')
 def view_studies(request, slug):
@@ -76,7 +64,7 @@ def view_series(request, slug, study_id):
         "patient":patient.PatientName, "patient_id":slug, "study_id":study_id})
 
 @login_required(login_url='/users/login/')
-def view_cts(request, slug, study_id, series_id):
+def view_patient(request, slug, study_id, series_id):
     """
     API call to view the patient details
 
@@ -90,15 +78,15 @@ def view_cts(request, slug, study_id, series_id):
     patient = Patient.objects.get(id=slug)
     rootDir = os.path.join(PatientDirBase, patient.PatientName)
     try:
-        cts, _ = getImageBlock(rootDir, slug, study_id, series_id)
-        ct_images[int(slug)] = cts
-        current_ct = 0
-        base = make_ct_image(current_ct, cts)
-
         # Get the DVH pane names as well
         rois = []
         study = Study.objects.get(id=study_id)
+        series = Series.objects.get(id=series_id)
         rt_rois = RTDVH.objects.filter(fk_study_id=study, fk_patient_id=patient)
+
+        # Get number of CTs
+        number_of_cts = CTImages.objects.filter(fk_study_id=study, fk_patient_id=patient, fk_series_id=series)
+
         for roi_raw in rt_rois:
             roi = roi_raw.DVHReferencedROI
             roi_info = {}
@@ -106,40 +94,12 @@ def view_cts(request, slug, study_id, series_id):
             roi_info["name"] = roi_original.ROIName
             roi_info["rt_roi_id"] = roi.id
             rois.append(roi_info)
-
-        return render(request, "uploader/patient.html", {"image":base, 
-            "patient":patient.PatientName, "id":slug, "ct_index":current_ct,
-            "rois":rois})
+        return render(request, "uploader/patient.html", {
+            "patient":patient.PatientName, "id":slug,
+            "rois":rois, "study":study_id, "series":series_id, "number_of_cts":number_of_cts})
     except AssertionError:
         return HttpResponse(status=500)
-
-@login_required(login_url='/users/login/')
-def scroll_cts(request):
-    ct_index = request.GET.get("ct_index")
-    delta = int(request.GET.get("delta"))
-    id = int(request.GET.get("id"))
-    ct_block = ct_images[id]
-
-    if ct_block is not None:
-        current_ct = int(ct_index) + delta
-        if(current_ct == -1):
-            current_ct = ct_block.shape[2] - 1
-        elif(current_ct == ct_block.shape[2]):
-            current_ct = 0
-        
-        base = make_ct_image(current_ct, ct_block)
-        json_data = {}
-        json_data["imgsrc"] = base.decode('utf-8')
-        json_data["index"] = current_ct
-        return JsonResponse(json_data)
-    else:
-        return HttpResponse(500)
-
-@login_required(login_url='/users/login/')
-def remove_ct(request):
-    id = request.GET.get("id")
-    del ct_images[int(id)] 
-    return HttpResponse(200) 
+ 
 
 @login_required(login_url='/users/login/')
 def view_patients(request):
