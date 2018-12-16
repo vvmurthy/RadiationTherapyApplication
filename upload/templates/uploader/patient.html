@@ -46,8 +46,7 @@
             {%endif%}
 
                     <h4>Viewing ROI: {{roi.name}}</h4>
-
-                    <div id="sidebar" style="max-width:33%;">
+                    <span id="sidebar" style="display:inline-block;vertical-align:top;">
                         <div>View Contours</div>
                         <div id="image">
                             <img id="ct" src="/AlgoEngine/ct_images/{{id}}/{{study}}/{{series}}/"/>
@@ -71,7 +70,11 @@
                                 View Patient's Plan
                             </button>
                         </div>
-                    </div>
+                    </span>
+
+                    <span style="display:inline-block;vertical-align:top;">
+                        <img id="dvh" src="/AlgoEngine/dvh/{{id}}/{{study}}/{{series}}/{{roi.rt_roi_id}}/"/>
+                    </span>
                 </div>
         {% endfor %}        
     </div>
