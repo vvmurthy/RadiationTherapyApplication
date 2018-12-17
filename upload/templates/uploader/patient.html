@@ -2,20 +2,57 @@
 {% block content %}
 
     <script>
-        function updateCT(value){
-            
+        function updateCT(value, roi){
+
             var index = document.getElementById("CtSlider").value;
             var checked = document.getElementById("ContourShow").checked;
-            var roiIndex = document.getElementById("RoiIndex").value;
+            var roiIndex = roi
 
-            var oldImage = document.getElementById("ct");
+            var oldImage = document.getElementById("ct-" + roi);
             var newImage = new Image();
 
             newImage.src = "/AlgoEngine/ct_images/{{id}}/{{study}}/{{series}}/" + roiIndex + "/" 
                 + index + "/" + checked + "/";
-            newImage.id = "ct";
+            newImage.id = "ct-" + roi;
             oldImage.parentNode.insertBefore(newImage, oldImage);
             oldImage.parentNode.removeChild(oldImage);
+
+        }
+
+        var hospitals = []
+        function updateDVH(value, roi){
+            var url = "/AlgoEngine/update_dvh/{{id}}/{{study}}/{{series}}/" + roi + "/";
+            // remove or add
+            if(hospitals.indexOf(value) == -1){
+                hospitals.push(value);
+            }else{
+                hospitals.splice(hospitals.indexOf(value), 1);
+            }
+
+            for(var i = 0 ; i < hospitals.length ; ++i){
+                if(i === 0){
+                    url += "?study=" + hospitals[i];
+                }else{
+                    url += "&study=" + hospitals[i];    
+                }
+                
+            }
+
+            // remove last and
+            if(hospitals.length > 1){
+                url = url.substring(0, url.length - 1);
+    
+            }
+            
+            // update the dvh
+            var oldImage = document.getElementById("dvh-" + roi);
+            var newImage = new Image();
+
+            newImage.src = url
+            newImage.id = "dvh-" + roi;
+            oldImage.parentNode.insertBefore(newImage, oldImage);
+            oldImage.parentNode.removeChild(oldImage);
+
 
         }
     </script>
@@ -49,14 +86,14 @@
                     <span id="sidebar" style="display:inline-block;vertical-align:top;">
                         <div>View Contours</div>
                         <div id="image">
-                            <img id="ct" src="/AlgoEngine/ct_images/{{id}}/{{study}}/{{series}}/"/>
+                            <img id="ct-{{roi.rt_roi_id}}" src="/AlgoEngine/ct_images/{{id}}/{{study}}/{{series}}/"/>
                         </div>
                         
                         <!-- Set up slider for contour-->
                         <form>
                             <div class="form-group">
                                 <label for="CtSlider">Scroll CTs</label>
-                                <input type="range" onchange="updateCT(this.value);" id="CtSlider" min="0" max="{{number_of_cts}}" value="0">
+                                <input type="range" onchange="updateCT(this.value, {{roi.rt_roi_id}});" id="CtSlider" min="0" max="{{number_of_cts}}" value="0">
                             </div>
                             <div class="input-group">
                                 <input type="checkbox" id="ContourShow" aria-label="Show Contour">
@@ -73,7 +110,25 @@
                     </span>
 
                     <span style="display:inline-block;vertical-align:top;">
-                        <img id="dvh" src="/AlgoEngine/dvh/{{id}}/{{study}}/{{series}}/{{roi.rt_roi_id}}/"/>
+                        <h4>DVH Histogram for {{roi.name}}</h4>
+                        <img id="dvh-{{roi.rt_roi_id}}" src="/AlgoEngine/dvh/{{id}}/{{study}}/{{series}}/{{roi.rt_roi_id}}/"/>
+                    </span>
+
+                    <span style="display:inline-block;vertical-align:top;">
+                        <h4>Historical Patients' Data</h4>
+
+                        <h6>My Hospital</h6>
+                            {% for study in my_hospital %}
+                                <input type="checkbox" id="my_hospital-study-{{study.id}}" onchange="updateDVH({{study.id}}, {{roi.rt_roi_id}});">
+                                <label for="my_hospital-study-{{study.id}}">{{study.fk_patient_id.PatientName}}</label>
+                                <span style="background-color:#ff0000;color:#ff0000;height:10px;width:10px;">.   .</span>
+                            {% endfor %}
+                        <h6>Other Hospitals</h6>
+                            {% for study in other_hospitals %}
+                                <input type="checkbox" id="other-hospitals-study-{{study.id}}" onchange="updateDVH({{study.id}}, {{roi.rt_roi_id}});">
+                                <label for="other-hospitals-study-{{study.id}}">{{study.fk_patient_id.PatientName}}</label>
+                                <span style="text-color:#ff0000;background-color:#ff0000;height:10px;width:10px;">.  .</span>
+                            {% endfor %}
                     </span>
                 </div>
         {% endfor %}        

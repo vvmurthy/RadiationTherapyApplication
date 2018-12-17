@@ -73,8 +73,8 @@ def parse(dataframe,user,patient,study,series):
             # Generate the dvh using dicompyler
             create_dvh = dvhlib.DVH.from_dicom_dvh(dataframe, referencedROI)
             create_dvh = create_dvh.cumulative
-            dvh.DVHCounts = str(create_dvh.counts.tostring())
-            dvh.DVHBins = str(create_dvh.bins.tostring())
+            dvh.DVHCounts = ",".join(map(str, create_dvh.counts))
+            dvh.DVHBins = ",".join(map(str, create_dvh.bins))
 
             dvh.fk_patient_id = patient
             dvh.fk_study_id = study

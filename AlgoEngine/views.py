@@ -22,6 +22,7 @@ import numpy as np
 from io import BytesIO
 import base64
 import json
+import cv2
 
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse
@@ -38,7 +39,9 @@ def make_ct_image(current_ct, ct_block, mask=None):
 	rgb[:, :, 1] = im
 	rgb[:, :, 2] = im
 	if mask is not None:
-		rgb[mask == 1, :] = [255, 0, 0]
+		mask = np.uint8(np.copy(mask))
+		_, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+		cv2.drawContours(rgb, contours, -1, (255, 0, 0), 5)
 
 	ax.imshow(rgb)
 	ax.axis('off')
@@ -87,17 +90,58 @@ def get_ct(request, patient_id, study_id, series_id):
 def get_dvh(request, patient_id, study_id, series_id, roi_index):
 	rt_roi = RTROI.objects.get(id=roi_index)
 	dvh = RTDVH.objects.get(DVHReferencedROI=rt_roi)
+	counts = np.array((dvh.DVHCounts).split(","), dtype=np.float64)
+	counts /= np.max(counts)
+	bins = np.array((dvh.DVHBins).split(","), dtype=np.float64)
+	bins = 0.5 * (bins[1:] + bins[:-1])
 
 	fig = plt.figure()
 	ax = fig.add_subplot(1,1,1)
 	fig.subplots_adjust(wspace=0, hspace=0)
-	rgb = np.zeros((100, 100, 3), dtype=np.uint8)
 
-	ax.imshow(rgb)
-	ax.axis('off')
-	plt.tight_layout()
+	ax.plot(bins, counts)
+	ax.set_xlabel("cm3")
+	ax.set_ylabel("%")
+
 	img = BytesIO()
 	fig.savefig(img, format="png", bbox_inches='tight', pad_inches=0, transparent=True)
 	plt.close()
 	return HttpResponse(img.getvalue(), content_type="image/png")
 
+
+@login_required(login_url="/users/login/")
+def update_dvh(request, patient_id, study_id, series_id, roi_index):
+	study = Study.objects.get(id=study_id)
+	rt_roi = RTROI.objects.get(id=roi_index, fk_study_id=study)
+	generic_roi = rt_roi.roi_id
+	dvh = RTDVH.objects.get(DVHReferencedROI=rt_roi)
+	counts = np.array((dvh.DVHCounts).split(","), dtype=np.float64)
+	counts /= np.max(counts)
+	bins = np.array((dvh.DVHBins).split(","), dtype=np.float64)
+	bins = 0.5 * (bins[1:] + bins[:-1])
+
+	fig = plt.figure()
+	ax = fig.add_subplot(1,1,1)
+	fig.subplots_adjust(wspace=0, hspace=0)
+
+	ax.plot(bins, counts)
+	ax.set_xlabel("cm3")
+	ax.set_ylabel("%")
+
+	for id_val in request.GET.getlist("study"):
+		study = Study.objects.get(id=id_val)
+		try:
+			rt_roi = RTROI.objects.get(roi_id=generic_roi, fk_study_id=study)
+			dvh = RTDVH.objects.get(DVHReferencedROI=rt_roi)
+			counts = np.array((dvh.DVHCounts).split(","), dtype=np.float64)
+			counts /= np.max(counts)
+			bins = np.array((dvh.DVHBins).split(","), dtype=np.float64)
+			bins = 0.5 * (bins[1:] + bins[:-1])
+			ax.plot(bins, counts, color=(1.0, 0.0, 0.0))
+		except:
+			pass
+
+	img = BytesIO()
+	fig.savefig(img, format="png", bbox_inches='tight', pad_inches=0, transparent=True)
+	plt.close()
+	return HttpResponse(img.getvalue(), content_type="image/png")

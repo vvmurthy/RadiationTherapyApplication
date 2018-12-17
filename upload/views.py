@@ -87,6 +87,32 @@ def view_patient(request, slug, study_id, series_id):
         # Get number of CTs
         number_of_cts = CTImages.objects.filter(fk_study_id=study, fk_patient_id=patient, fk_series_id=series)
 
+        similar = Similarity.objects.filter(fk_study_id_1=study)
+        similar2 = Similarity.objects.filter(fk_study_id_2=study)
+
+        studies = []
+        for case in similar:
+            studies.append(case.fk_study_id_2)
+        for case in similar2:
+            studies.append(case.fk_study_id_1)
+        studies = set(studies)
+
+        my_hospital = []
+        other_hospitals = []
+        # Get similar patients (my hospital)
+        other_count = 0
+        for study in studies:
+            if patient.fk_hospital_id == study.fk_patient_id.fk_hospital_id:
+                my_hospital.append(study)
+            else:
+                st = Study()
+                st.id = study.id
+                pt = Patient()
+                pt.PatientName = "ANON" + str(other_count) 
+                st.fk_patient_id = pt
+                other_hospitals.append(st)
+                other_count+=1
+
         for roi_raw in rt_rois:
             roi = roi_raw.DVHReferencedROI
             roi_info = {}
@@ -96,7 +122,8 @@ def view_patient(request, slug, study_id, series_id):
             rois.append(roi_info)
         return render(request, "uploader/patient.html", {
             "patient":patient.PatientName, "id":slug,
-            "rois":rois, "study":study_id, "series":series_id, "number_of_cts":number_of_cts})
+            "rois":rois, "study":study_id, "series":series_id, "number_of_cts":number_of_cts,
+            "my_hospital":my_hospital, "other_hospitals":other_hospitals})
     except AssertionError:
         return HttpResponse(status=500)
  
