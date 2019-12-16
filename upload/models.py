@@ -158,6 +158,56 @@ class RTDVH(models.Model):
     fk_study_id = models.ForeignKey(Study)
     fk_patient_id = models.ForeignKey(Patient)
 
+class RTPlan(models.Model):
+    class Meta:
+        db_table = "rt_plan"
+
+    fk_series_id = models.ForeignKey(Series)
+    fk_study_id = models.ForeignKey(Study)
+    fk_patient_id = models.ForeignKey(Patient)
+
+    # Tolerance Table parameters
+    limit_x = models.CharField(max_length=100)
+    limit_y = models.CharField(max_length=100)
+    limit_asymx = models.CharField(max_length=100)
+    limit_asymy = models.CharField(max_length=100)
+    limit_mlcx = models.CharField(max_length=100)
+    limit_mlcy = models.CharField(max_length=100)
+
+    # Dose reference parameters
+    dose_reference_description = models.TextField()
+    target_prescription_dose = models.FloatField()
+    target_maximum_dose = models.FloatField()
+    delivery_maximum_dose = models.FloatField()
+
+    # TODO: fill beam sequence
+    referenced_beam_sequence = models.TextField()
+    number_of_beams = models.IntegerField()
+    number_of_brachy_application_setups = models.IntegerField()
+
+    # Patient setup params
+    setup_sequence = models.TextField()
+    fraction_group_sequence = models.TextField()
+
+
+class PatientSetup(models.Model):
+    class Meta:
+        db_table = "patient_setup"
+
+    patient_position = models.CharField(max_length=20)
+    patient_setup_number = models.IntegerField()
+    setup_technique = models.CharField(max_length=100)
+    setup_technique_description = models.TextField()
+
+
+
+# Beam doseage and numbers
+class FractionGroupSequence(models.Model):
+    class Meta:
+        db_table = "fraction_group_sequence"
+    beam_dose = models.FloatField()
+    beam_meterset = models.FloatField()
+    beam_number = models.IntegerField()
 
 class RTIsoDose(models.Model):
     class Meta:

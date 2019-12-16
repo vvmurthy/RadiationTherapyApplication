@@ -56,7 +56,7 @@ def getImageBlock(data_path, patient_id, study_id, series_id):
     # Get CT scan SOPInstanceUIDs
     ids = CTImages.objects.values_list('SOPInstanceUID', flat=True).filter(fk_patient_id=patient_id, fk_study_id=study_id,
         fk_series_id=series_id)
-
+    print(data_path)
     ct_files = glob.glob(data_path + '/' + 'CT*.dcm')
     if len(ct_files) == 0:
         raise AssertionError("No files found")

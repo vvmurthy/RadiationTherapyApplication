@@ -24,6 +24,7 @@ from . import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^upload/',include('upload.urls')),
+    url(r'^AlgoEngine/',include('AlgoEngine.urls')),
     url(r'^users/', include('UserProfile.urls')),
 
     url(r'^home/', views.home, name='home'),

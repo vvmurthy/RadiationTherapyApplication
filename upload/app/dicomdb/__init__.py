@@ -19,7 +19,6 @@ import logging
 type_dict = {
     'RTSTRUCT': RTStructureset,
     'RTDOSE': RTDoseset,
-    'RTPLAN': RPPlan,
     'CT'    : CTImage
 }
 
@@ -88,9 +87,8 @@ def parse(dicom_dataframe,user_id,patientName):
         series.save()
 
     print("processing data of modality: " + str(dicom_dataframe.Modality))
-    res = type_dict[dicom_dataframe.Modality].parse(dicom_dataframe, user, patient, study, series)
+    res = None
+    if dicom_dataframe.Modality != "RTPLAN":
+        res = type_dict[dicom_dataframe.Modality].parse(dicom_dataframe, user, patient, study, series)
     logging.info("Parsing completed. Starting OVH / STS extraction")
-    if res:
-        return study
-    else:
-        return None
+    return study
