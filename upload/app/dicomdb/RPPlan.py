@@ -13,6 +13,7 @@ def parse(dataframe,user,patient,study,series):
 		plan = RTPlan()
 		plan.fk_study_id = study
 		plan.fk_patient_id = patient
+		plan.fk_series_id = series
 
 
 		seq = dataframe.ToleranceTableSequence[0]
@@ -33,28 +34,28 @@ def parse(dataframe,user,patient,study,series):
 
 		# Fill the Patient Setup params
 		setup = ""
-		for setup in dataframe.PatientSetupSequence:
+		for set in dataframe.PatientSetupSequence:
 			patient_setup = PatientSetup()
-			patient_setup.patient_position = setup.PatientPosition
-			patient_setup.patient_setup_number = setup.PatientSetupNumber
-			patient_setup.setup_technique = setup.SetupTechnique
-			patient_setup.setup_technique_description = setup.SetupTechniqueDescription
+			patient_setup.patient_position = set.PatientPosition
+			patient_setup.patient_setup_number = set.PatientSetupNumber
+			patient_setup.setup_technique = set.SetupTechnique
+			patient_setup.setup_technique_description = set.SetupTechniqueDescription
 			patient_setup.save()
 
 			setup += str(patient_setup.id) + ","
 		plan.setup_sequence = setup 
 
 		# Fill in the fraction group sequence
-		fraction_group = ""
-		f_group = dataframe.FractionGroupSequence[0]
-		for setup in f_group:
-			dosage = FractionGroupSequence()
-			dosage.beam_dose = setup.BeamDose
-			dosage.referenced_beam_number = setup.ReferencedBeamNumber
-			dosage.beam_meterset = setup.BeamMeterset
-			dosage.save()
-			fraction_group += str(dosage.id) + ","
-		plan.fraction_group_sequence = fraction_group
+		# fraction_group = ""
+		# f_group = dataframe.FractionGroupSequence[0]
+		#for setup in f_group:
+		#	dosage = FractionGroupSequence()
+		#	dosage.beam_dose = setup.BeamDose
+		#	dosage.referenced_beam_number = setup.ReferencedBeamNumber
+		#	dosage.beam_meterset = setup.BeamMeterset
+		#	dosage.save()
+	#		fraction_group += str(dosage.id) + ","
+		#plan.fraction_group_sequence = fraction_group
 
 		# TODO: fill in beam sequence
 
