@@ -5,7 +5,7 @@ from .models import UserProfile
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['occupation', 'institution', 'birthday', 'bio']
+        fields = ['name','institution', 'bio']
         exclude = ['user',]
 
     _PROFILE_FIELDS = Meta.fields

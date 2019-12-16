@@ -27,6 +27,7 @@ def options(request):
 #def login(request):
 #	return render(request, 'users/login.html')
 
+
 def signup(request):
 	if request.method == 'POST':
 		form = UserCreationForm(request.POST)

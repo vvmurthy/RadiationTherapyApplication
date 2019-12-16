@@ -26,11 +26,13 @@ urlpatterns = [
     url(r'^upload/',include('upload.urls')),
     url(r'^AlgoEngine/',include('AlgoEngine.urls')),
     url(r'^users/', include('UserProfile.urls')),
+    
 
     url(r'^home/', views.home, name='home'),
     url(r'^about/', views.about, name='about'),
     url(r'^features/', views.features, name='features'),
     url(r'^faq/', views.faq, name='faq'),
+    
 
     #keep the below url pattern at the very bottom
     url(r'^$', views.index, name='index'),

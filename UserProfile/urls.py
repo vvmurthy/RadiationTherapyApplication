@@ -15,4 +15,7 @@ urlpatterns = [
 
 	#/users/options/
 	url(r'^options/$', views.options, name='options')
+	
+	
+
 ]
